@@ -5,11 +5,18 @@ import { PagesComponent } from './pages.component';
 import { DashboardComponent } from './dashboard/dashboard.component';
 import { ECommerceComponent } from './e-commerce/e-commerce.component';
 import { NotFoundComponent } from './miscellaneous/not-found/not-found.component';
+import { ProjectModule } from './project/project.module'
+
 
 const routes: Routes = [{
   path: '',
   component: PagesComponent,
   children: [
+    {
+      path: 'project',
+      loadChildren: () => import('./project/project.module')
+        .then(m => m.ProjectModule),
+    },
     {
       path: 'dashboard',
       component: ECommerceComponent,
@@ -70,7 +77,7 @@ const routes: Routes = [{
     },
     {
       path: '',
-      redirectTo: 'dashboard',
+      redirectTo: 'project/monitering',
       pathMatch: 'full',
     },
     {
