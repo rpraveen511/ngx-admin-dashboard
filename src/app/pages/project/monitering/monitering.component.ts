@@ -7,7 +7,6 @@ import {
 } from "@daypilot/daypilot-lite-angular";
 import { SinequaService } from '../../../shared/services/sinequa.service';
 
-
 @Component({
   selector: 'ngx-monitering',
   templateUrl: './monitering.component.html',
@@ -23,20 +22,13 @@ export class MoniteringComponent implements OnInit, AfterViewInit {
   @ViewChild("calendar") calendar!: DayPilotCalendarComponent;
 
   expanded: boolean = true;
-
-
   events: DayPilot.EventData[] = [];
-
   date = DayPilot.Date.today();
-
-
-
   server = {
     node: '',
     jobType: 'all',
     status: 'all'
   }
-
   nodes = [];
   jobTypes = [
     { name: 'All', value: 'all' },
@@ -48,13 +40,8 @@ export class MoniteringComponent implements OnInit, AfterViewInit {
     { name: 'All', value: 'all' },
     { name: 'Error', value: 'error' },
     { name: 'Running', value: 'running' },
+    { name: 'Warning', value: 'warning' },
     { name: 'Ok', value: 'ok' }];
-
-    views = [
-      { name: 'Month', value: 'Month' },
-      { name: 'Week', value: 'Week' },
-      { name: 'Day', value: 'Day' },
-    ];  
 
   configNavigator: DayPilot.NavigatorConfig = {
     showMonths: 1,
@@ -193,22 +180,6 @@ export class MoniteringComponent implements OnInit, AfterViewInit {
     this.loadEvents();
   }
 
-  selectView(event){
-    switch(event.target.value) {
-      case 'Day':
-        this.viewDay();
-        this.configNavigator.selectMode == 'Day'
-        break;
-      case 'Week':
-        this.viewWeek();
-        this.configNavigator.selectMode == 'Week'
-        break;
-      default:
-        this.viewMonth();
-        this.configNavigator.selectMode == 'Month'
-    }
-  }
-
   selectNode(event) {
     this.server.node = event.target.value;
     this.loadEventsBasedonSelection();
@@ -224,7 +195,7 @@ export class MoniteringComponent implements OnInit, AfterViewInit {
   }
 
   selectStatus(event) {
-    this.server.node = event.target.value;
+    this.server.status = event.target.value;
     this.loadEventsBasedonSelection();
   }
 

@@ -37,15 +37,13 @@
     }
     select {
       margin-right: 10px;
-      // width: -webkit-fill-available
+      width: -webkit-fill-available
     }
 
     .dropdowns {
-      display:flex;
-      justify-content: space-around;
-      // display: grid;
+      display: grid;
     }
 
-    // .dropdown{
-    //   margin-top: 15px;
-    // }
+    .dropdown{
+      margin-top: 15px;
+    }
