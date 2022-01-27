@@ -29,6 +29,18 @@
         </select>
       </div>
     </div>
+
+    <div class="legend" *ngIf="legendTitle.length > 0">
+      <div class="legend-view" *ngFor="let item of legendTitle">
+        <div>
+          <span  class="legend-marker" [ngStyle]="{'background': item.backColor}"></span>
+        </div>
+        <div  class="legend-text" title={{item.text}}>{{ item.text}}
+          <!-- <span title=item.text></span> -->
+        </div>
+      </div>      
+    </div> 
+
   </div>
   <div class="content col-10">
     <div class="buttons">
@@ -38,8 +50,30 @@
         [class]="this.configNavigator.selectMode == 'Month' ? 'selected' : ''">Month</button>
     </div>
 
-    <daypilot-calendar [config]="configDay" [events]="events" #day></daypilot-calendar>
-    <daypilot-calendar [config]="configWeek" [events]="events" #week></daypilot-calendar>
-    <daypilot-month [config]="configMonth" [events]="events" #month></daypilot-month>
+    <daypilot-calendar [config]="configDay" [events]="events" (click)="handleEvent( $event)" #day></daypilot-calendar>
+    <daypilot-calendar [config]="configWeek" [events]="events" (click)="handleEvent( $event)" #week></daypilot-calendar>
+    <daypilot-month [config]="configMonth" [events]="events" (click)="handleEvent( $event)" #month></daypilot-month>
   </div>
 </div>
+
+<ng-template #modalContent let-close="close">
+  <div class="modal-header">
+    <h5 class="modal-title">{{ modalData?.event?.title }}</h5>
+    <button type="button" class="close" (click)="close()">
+      <span aria-hidden="true">&times;</span>
+    </button>
+  </div>
+  <div class="modal-body">
+    <div>
+      Start Time : {{ modalData?.event?.start | date:'short'}}
+    </div>
+    <div>
+      End Time : {{ modalData?.event?.end | date:'short'}}
+    </div>
+  </div>
+  <div class="modal-footer">
+    <button type="button" class="btn btn-outline-secondary" (click)="close()">
+      OK
+    </button>
+  </div>
+</ng-template>

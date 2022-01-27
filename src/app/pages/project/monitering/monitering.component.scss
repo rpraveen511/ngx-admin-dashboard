@@ -47,3 +47,32 @@
     .dropdown{
       margin-top: 15px;
     }
+
+    .legend{
+      margin-top: 25px;
+      padding: 5px;
+      border: 1px solid #ccc;      
+    }
+
+    .legend-view{
+      margin-top: 15px;
+      display: flex;
+    }
+
+    .legend-text{
+      text-overflow: ellipsis;
+      overflow: hidden;
+      padding-left: 10px;
+    }
+
+    .legend-marker{
+      display: inline-block;
+      width: 20px;
+      height: 10px;
+      vertical-align: middle;
+      user-select: none;
+    }
+
+    ul li {
+      list-style-type: none;
+    }

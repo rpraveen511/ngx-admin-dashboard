@@ -1,4 +1,4 @@
-import { Component, OnInit, AfterViewInit, ViewChild, ComponentRef, ViewContainerRef } from '@angular/core';
+import { Component, OnInit, AfterViewInit, ViewChild, TemplateRef, ViewContainerRef } from '@angular/core';
 import {
   DayPilot,
   DayPilotCalendarComponent,
@@ -12,7 +12,7 @@ import { SinequaService } from '../../../shared/services/sinequa.service';
   templateUrl: './monitering.component.html',
   styleUrls: ['./monitering.component.scss']
 })
-export class MoniteringComponent implements OnInit, AfterViewInit {
+export class MoniteringComponent implements OnInit {
 
   @ViewChild("day") day!: DayPilotCalendarComponent;
   @ViewChild("week") week!: DayPilotCalendarComponent;
@@ -20,6 +20,8 @@ export class MoniteringComponent implements OnInit, AfterViewInit {
   @ViewChild("navigator") nav!: DayPilotNavigatorComponent;
   @ViewChild("navigator") navigator!: DayPilotNavigatorComponent;
   @ViewChild("calendar") calendar!: DayPilotCalendarComponent;
+  @ViewChild('modalContent') modalContent!: TemplateRef<any>;
+
 
   expanded: boolean = true;
   events: DayPilot.EventData[] = [];
@@ -45,15 +47,16 @@ export class MoniteringComponent implements OnInit, AfterViewInit {
 
   configNavigator: DayPilot.NavigatorConfig = {
     showMonths: 1,
+    skipMonths: 1,
     cellWidth: 25,
     cellHeight: 25,
-    skipMonths: 3,
     dayHeaderHeight: 30,
     titleHeight: 30,
     onVisibleRangeChanged: args => {
       this.loadEvents();
     }
   };
+  legendTitle = [];
 
   config: DayPilot.CalendarConfig = {
     // startDate: DayPilot.Date.today(),
@@ -123,9 +126,9 @@ export class MoniteringComponent implements OnInit, AfterViewInit {
     this.getNodes();
   }
 
-  ngAfterViewInit(): void {
-    this.loadEvents();
-  }
+  // ngAfterViewInit(): void {
+  //   this.loadEvents();
+  // }
 
   getNodes() {
     let data = {
@@ -141,7 +144,7 @@ export class MoniteringComponent implements OnInit, AfterViewInit {
     })
   }
 
-  loadEvents() {
+  async loadEvents() {
     let data = {
       "method": "dev.plugin",
       "plugin": "JobScheduleCalendar",
@@ -149,9 +152,55 @@ export class MoniteringComponent implements OnInit, AfterViewInit {
       "user": "admin",
       "password": "admin"
     }
-    this.ss.getEvents(data).subscribe(resp => {
-      this.events = resp['events'];
+    await this.ss.getEvents(data).subscribe(resp => { 
+      console.log(resp)
+      let data = resp['events']     
+      this.events =  data.map( item => {
+        // item['bubbleHtml'] = '';
+        // item['bubbleHtml'] = "<div style='font-weight:bold'>Event Details</div><div>Scheduler Event 1</div>"
+        return item
+      });
+
+      // this.legendTitle = [...new Set(data.map(item => item.text))]
+      // this.legendTitle = data.filter((a, i) => data.findIndex((s) => a.text === s.text) === i);
+      this.legendTitle = [...new Map(data.map((item) => [item["text"], item])).values()];
+      console.log(this.legendTitle)
     })
+    // this.events = [
+    //   {
+    //     "id": "/PlatformDashboard/JobStatus/|665A821BDEFE4E9B9716AC752A722B8E",
+    //     "start": "2021-11-25T04:01:41",
+    //     "end": "2021-11-25T04:25:49",
+    //     "text": "WebAppSINEQUA-POC",
+    //     "barColor": "#e69140",
+    //     "barBackColor": "#e69140",
+    //     "backColor": "#e69140",
+    //     bubbleHtml: "<div style='font-weight:bold'>Event Details</div><div>Scheduler Event 1</div>",
+        
+    //   },
+    //   {
+    //     "id": "/PlatformDashboard/JobStatus/|9B0A6EAC90974CA28387216FC3B993F5",
+    //     "start": "2021-11-25T09:17:14",
+    //     "end": "2021-11-25T09:17:27",
+    //     "text": "/expertfinder.csv/ExpertFinder/",
+    //     "barColor": "#40e6a2",
+    //     "barBackColor": "#40e6a2",
+    //     "backColor": "#40e6a2",
+    //     bubbleHtml: "<div style='font-weight:bold'>Event Details</div><div>Scheduler Event 1</div>",
+
+    //   },
+    //   {
+    //     "id": "/PlatformDashboard/JobStatus/|81C1F50922B94B87B02C1FAAA10E853D",
+    //     "start": "2021-11-25T09:34:25",
+    //     "end": "2021-11-25T09:34:27",
+    //     "text": "/expertfinder.csv/ExpertFinder/",
+    //     "barColor": "#40e6a2",
+    //     "barBackColor": "#40e6a2",
+    //     "backColor": "#40e6a2",
+    //     bubbleHtml: "<div style='font-weight:bold'>Event Details</div><div>Scheduler Event 1</div>",
+
+    //   },
+    // ]
   }
 
 
@@ -212,6 +261,17 @@ export class MoniteringComponent implements OnInit, AfterViewInit {
     this.ss.getEvents(data).subscribe(resp => {
       this.events = resp['events'];
     })
+  }
+
+  handleEvent(e): void {
+    // this.modalData = { event, action };
+    // this.modal.open(this.modalContent, { size: 'lg' });
+    console.log(e)
+  }
+
+  getColor(item){
+    console.log(item)
+    return item.backColor;
   }
 
 }

@@ -16,8 +16,6 @@ import { SharedModule } from '../../shared/shared.module';
 import { DayPilotModule } from '@daypilot/daypilot-lite-angular';
 import { HttpClientModule } from '@angular/common/http';
 import { FormsModule } from '@angular/forms';
-// import { SidebarModule } from './sidebar/sidebar.module';
-
 
 @NgModule({
   declarations: [
@@ -36,7 +34,6 @@ import { FormsModule } from '@angular/forms';
     HttpClientModule,
     FormsModule,
     SharedModule,
-    // SidebarModule
   ],
   schemas: [
     CUSTOM_ELEMENTS_SCHEMA,
