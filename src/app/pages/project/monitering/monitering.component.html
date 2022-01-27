@@ -22,24 +22,41 @@
       </div>
       <div class="dropdown">
         <label><b>STATUS : &nbsp;</b></label>
-        <select id="status" [(ngModel)]="server.status" (change)="selectStatus($event)">
-          <option *ngFor="let item of status" value="{{item.value}}">
-            {{ item.name }}
+        <select id="statusType" [(ngModel)]="server.statusType" (change)="selectStatus($event)">          
+          <option *ngFor="let statusType of statusTypes" value="{{statusType.value}}">
+            {{ statusType.name }}
           </option>
         </select>
       </div>
     </div>
 
-    <div class="legend" *ngIf="legendTitle.length > 0">
+    <!-- <div class="legend" *ngIf="legendTitle.length > 0">
       <div class="legend-view" *ngFor="let item of legendTitle">
         <div>
-          <span  class="legend-marker" [ngStyle]="{'background': item.backColor}"></span>
+          <span class="legend-marker" [ngStyle]="{'background': item.backColor}"></span>
         </div>
-        <div  class="legend-text" title={{item.text}}>{{ item.text}}
-          <!-- <span title=item.text></span> -->
+        <div class="legend-text" title={{item.text}}>{{ item.text}}
         </div>
-      </div>      
-    </div> 
+      </div>
+    </div> -->
+
+    <div class="legend">
+      <div class="legend-title">
+        <b class="legend-text">Event Type</b>
+      </div>
+      <div class="legend-view">
+        <div><span class="legend-marker" style="background : #40e6a2;"></span></div>
+        <div class="legend-text">Connector</div>
+      </div>
+      <div class="legend-view">
+        <div><span class="legend-marker" style="background : rgb(51, 102, 255);"></span></div>
+        <div class="legend-text">Command</div>
+      </div>
+      <div class="legend-view">
+        <div><span class="legend-marker" style="background : rgb(230, 145, 64);"></span></div>
+        <div class="legend-text">Partition</div>
+      </div>
+    </div>
 
   </div>
   <div class="content col-10">
@@ -50,30 +67,25 @@
         [class]="this.configNavigator.selectMode == 'Month' ? 'selected' : ''">Month</button>
     </div>
 
-    <daypilot-calendar [config]="configDay" [events]="events" (click)="handleEvent( $event)" #day></daypilot-calendar>
-    <daypilot-calendar [config]="configWeek" [events]="events" (click)="handleEvent( $event)" #week></daypilot-calendar>
-    <daypilot-month [config]="configMonth" [events]="events" (click)="handleEvent( $event)" #month></daypilot-month>
+    <daypilot-calendar [config]="configDay" [events]="events" (click)="openDilog(dialog)" #day>
+    </daypilot-calendar>
+    <daypilot-calendar [config]="configWeek" [events]="events" (click)="openDilog(dialog)" #week>
+    </daypilot-calendar>
+    <daypilot-month [config]="configMonth" [events]="events" (click)="openDilog( dialog)" #month>
+    </daypilot-month>
   </div>
 </div>
 
-<ng-template #modalContent let-close="close">
-  <div class="modal-header">
-    <h5 class="modal-title">{{ modalData?.event?.title }}</h5>
-    <button type="button" class="close" (click)="close()">
-      <span aria-hidden="true">&times;</span>
-    </button>
-  </div>
-  <div class="modal-body">
-    <div>
-      Start Time : {{ modalData?.event?.start | date:'short'}}
-    </div>
-    <div>
-      End Time : {{ modalData?.event?.end | date:'short'}}
-    </div>
-  </div>
-  <div class="modal-footer">
-    <button type="button" class="btn btn-outline-secondary" (click)="close()">
-      OK
-    </button>
-  </div>
+<ng-template #dialog let-data let-ref="dialogRef">
+  <nb-card>
+    <nb-card-header>{{  eventData?.text }}</nb-card-header>
+    <nb-card-body>
+      <p>Event ID : &nbsp;{{  eventData?.id }}</p>
+      <p>Starting Time : &nbsp;{{  eventData?.start | date }}</p>
+      <p>Ending Time : &nbsp;{{  eventData?.end | date}}</p>
+    </nb-card-body>
+    <nb-card-footer class="dialog-footer">
+      <button nbButton (click)="ref.close()">Close</button>
+    </nb-card-footer>
+  </nb-card>
 </ng-template>

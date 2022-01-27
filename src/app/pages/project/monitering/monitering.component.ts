@@ -1,10 +1,12 @@
-import { Component, OnInit, AfterViewInit, ViewChild, TemplateRef, ViewContainerRef } from '@angular/core';
+import { Component, OnInit, ViewChild, TemplateRef, ViewContainerRef, Input } from '@angular/core';
 import {
   DayPilot,
   DayPilotCalendarComponent,
   DayPilotMonthComponent,
   DayPilotNavigatorComponent
 } from "@daypilot/daypilot-lite-angular";
+import { NbDialogService } from '@nebular/theme';
+
 import { SinequaService } from '../../../shared/services/sinequa.service';
 
 @Component({
@@ -18,18 +20,17 @@ export class MoniteringComponent implements OnInit {
   @ViewChild("week") week!: DayPilotCalendarComponent;
   @ViewChild("month") month!: DayPilotMonthComponent;
   @ViewChild("navigator") nav!: DayPilotNavigatorComponent;
-  @ViewChild("navigator") navigator!: DayPilotNavigatorComponent;
-  @ViewChild("calendar") calendar!: DayPilotCalendarComponent;
-  @ViewChild('modalContent') modalContent!: TemplateRef<any>;
+  @ViewChild('dialog') dialog:TemplateRef<any>;
 
 
-  expanded: boolean = true;
+  @Input() eventData = {};
+
   events: DayPilot.EventData[] = [];
   date = DayPilot.Date.today();
   server = {
     node: '',
     jobType: 'all',
-    status: 'all'
+    statusType: 'all'
   }
   nodes = [];
   jobTypes = [
@@ -38,12 +39,12 @@ export class MoniteringComponent implements OnInit {
     { name: 'Domain', value: 'domain' },
     { name: 'Command', value: 'command' }];
 
-  status = [
+    statusTypes = [
     { name: 'All', value: 'all' },
     { name: 'Error', value: 'error' },
-    { name: 'Running', value: 'running' },
-    { name: 'Warning', value: 'warning' },
-    { name: 'Ok', value: 'ok' }];
+    { name: 'Running', value: 'Running' },
+    { name: 'Warning', value: 'Warning' },
+    { name: 'Ok', value: 'OK' }];
 
   configNavigator: DayPilot.NavigatorConfig = {
     showMonths: 1,
@@ -53,9 +54,11 @@ export class MoniteringComponent implements OnInit {
     dayHeaderHeight: 30,
     titleHeight: 30,
     onVisibleRangeChanged: args => {
+      alert('1')
       this.loadEvents();
     }
   };
+
   legendTitle = [];
 
   config: DayPilot.CalendarConfig = {
@@ -77,7 +80,11 @@ export class MoniteringComponent implements OnInit {
         id: DayPilot.guid(),
         text: modal.result
       });
-    }
+    },
+    onEventClick: function(args) {
+      console.log(args)
+      alert("Event clicked: " + args.e.text());
+    },
   };
 
   selectTomorrow() {
@@ -91,6 +98,9 @@ export class MoniteringComponent implements OnInit {
   }
 
   configDay: DayPilot.CalendarConfig = {
+    onEventClick: function(args) {
+      this.eventData = args.e.data;
+    },
   };
 
   configWeek: DayPilot.CalendarConfig = {
@@ -107,6 +117,9 @@ export class MoniteringComponent implements OnInit {
         text: modal.result
       }));
     },
+    onEventClick: function(args) {
+      this.eventData = args.e.data;
+    },
   };
 
   configMonth: DayPilot.MonthConfig = {
@@ -116,7 +129,7 @@ export class MoniteringComponent implements OnInit {
 
   constructor(
     private ss: SinequaService,
-    private viewContainerRef: ViewContainerRef
+    private dialogService: NbDialogService,
   ) {
     this.viewMonth();
   }
@@ -125,10 +138,6 @@ export class MoniteringComponent implements OnInit {
     this.loadEvents();
     this.getNodes();
   }
-
-  // ngAfterViewInit(): void {
-  //   this.loadEvents();
-  // }
 
   getNodes() {
     let data = {
@@ -139,8 +148,10 @@ export class MoniteringComponent implements OnInit {
       "password": "admin"
     }
     this.ss.getNodes(data).subscribe(resp => {
-      this.nodes = resp['indexsize'];
-      this.server.node = resp['indexsize'][0].value;
+      if (resp['methodresult'] === 'ok'){
+        this.nodes = resp['indexsize'];
+        this.server.node = resp['indexsize'][0].value;
+      }      
     })
   }
 
@@ -152,20 +163,18 @@ export class MoniteringComponent implements OnInit {
       "user": "admin",
       "password": "admin"
     }
-    await this.ss.getEvents(data).subscribe(resp => { 
-      console.log(resp)
+    await this.ss.getEvents(data).subscribe(resp => {
+      if (resp['methodresult'] === 'ok'){
+        console.log(resp)
       let data = resp['events']     
       this.events =  data.map( item => {
         // item['bubbleHtml'] = '';
         // item['bubbleHtml'] = "<div style='font-weight:bold'>Event Details</div><div>Scheduler Event 1</div>"
         return item
       });
-
-      // this.legendTitle = [...new Set(data.map(item => item.text))]
-      // this.legendTitle = data.filter((a, i) => data.findIndex((s) => a.text === s.text) === i);
-      this.legendTitle = [...new Map(data.map((item) => [item["text"], item])).values()];
-      console.log(this.legendTitle)
-    })
+      // this.showLegend(this.events);
+      }      
+    })   
     // this.events = [
     //   {
     //     "id": "/PlatformDashboard/JobStatus/|665A821BDEFE4E9B9716AC752A722B8E",
@@ -203,6 +212,35 @@ export class MoniteringComponent implements OnInit {
     // ]
   }
 
+  
+  loadEventsBasedonSelection() {
+    let data = {
+      "method": "dev.plugin",
+      "plugin": "JobScheduleCalendar",
+      "nodeName": this.server.node,
+      "jobType": this.server.jobType,
+      "statusType" : this.server.statusType,
+      "output": "json",
+      "user": "admin",
+      "password": "admin"
+    }
+    this.ss.getEvents(data).subscribe(resp => {
+      if (resp['methodresult'] === 'ok'){
+        this.events = resp['events'];
+      console.log(this.events)
+      // this.showLegend(this.events);
+      }      
+    })  
+    
+  }
+
+  showLegend(data){
+    this.legendTitle = [...new Map(data.map((item) => [item["text"], item])).values()];
+    // this.legendTitle = [...new Set(data.map(item => item.text))]
+    // this.legendTitle = data.filter((a, i) => data.findIndex((s) => a.text === s.text) === i);
+    console.log(this.legendTitle)
+  }
+
 
   viewDay(): void {
     this.configNavigator.selectMode = "Day";
@@ -225,17 +263,13 @@ export class MoniteringComponent implements OnInit {
     this.configMonth.visible = true;
   }
 
-  viewChange(): void {
-    this.loadEvents();
-  }
-
   selectNode(event) {
     this.server.node = event.target.value;
     this.loadEventsBasedonSelection();
   }
 
   selectJobType(event) {
-    if (event.target.value === 'all') {
+    if (event.target.value === 'all' && this.server.statusType === 'all') {
       this.loadEvents();
     } else {
       this.server.jobType = event.target.value;
@@ -244,34 +278,17 @@ export class MoniteringComponent implements OnInit {
   }
 
   selectStatus(event) {
-    this.server.status = event.target.value;
-    this.loadEventsBasedonSelection();
-  }
-
-  loadEventsBasedonSelection() {
-    let data = {
-      "method": "dev.plugin",
-      "plugin": "JobScheduleCalendar",
-      "nodeName": this.server.node,
-      "jobType": this.server.jobType,
-      "output": "json",
-      "user": "admin",
-      "password": "admin"
+    if (event.target.value === 'all' && this.server.jobType === 'all') {
+      this.loadEvents();
+    } else {
+      this.server.statusType = event.target.value;
+      this.loadEventsBasedonSelection();
     }
-    this.ss.getEvents(data).subscribe(resp => {
-      this.events = resp['events'];
-    })
   }
 
-  handleEvent(e): void {
-    // this.modalData = { event, action };
-    // this.modal.open(this.modalContent, { size: 'lg' });
-    console.log(e)
-  }
-
-  getColor(item){
-    console.log(item)
-    return item.backColor;
+  openDilog(dialog: TemplateRef<any>) {    
+    this.dialogService.open(
+      dialog,this.eventData);
   }
 
 }

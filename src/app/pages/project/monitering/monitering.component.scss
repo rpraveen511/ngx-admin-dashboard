@@ -51,12 +51,17 @@
     .legend{
       margin-top: 25px;
       padding: 5px;
+      background: whitesmoke;
       border: 1px solid #ccc;      
     }
 
+    .legend-title{
+      text-align: center;
+    }
+
     .legend-view{
-      margin-top: 15px;
       display: flex;
+      margin: 10px;
     }
 
     .legend-text{
@@ -75,4 +80,8 @@
 
     ul li {
       list-style-type: none;
+    }
+
+    .dialog-footer{
+      align-self: center;
     }
