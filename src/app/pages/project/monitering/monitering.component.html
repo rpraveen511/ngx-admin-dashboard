@@ -1,5 +1,5 @@
 <div class="container-fluid">
-  <div class="navigator col-2">
+  <div class="navigator col-lg-2">
     <daypilot-navigator [config]="configNavigator" [events]="events" [(date)]="date" (dateChange)="changeDate($event)"
       #navigator></daypilot-navigator>
 
@@ -42,24 +42,24 @@
 
     <div class="legend">
       <div class="legend-title">
-        <b class="legend-text">Event Type</b>
+        <b class="legend-text">Status Type</b>
       </div>
       <div class="legend-view">
-        <div><span class="legend-marker" style="background : #40e6a2;"></span></div>
-        <div class="legend-text">Connector</div>
+        <div><span class="legend-marker" style="background : rgb(0, 214, 143);"></span></div>
+        <div class="legend-text">Ok</div>
       </div>
       <div class="legend-view">
         <div><span class="legend-marker" style="background : rgb(51, 102, 255);"></span></div>
-        <div class="legend-text">Command</div>
+        <div class="legend-text">Running</div>
       </div>
       <div class="legend-view">
-        <div><span class="legend-marker" style="background : rgb(230, 145, 64);"></span></div>
-        <div class="legend-text">Partition</div>
+        <div><span class="legend-marker" style="background : #ff3d71;"></span></div>
+        <div class="legend-text">Error</div>
       </div>
     </div>
 
   </div>
-  <div class="content col-10">
+  <div class="content col-lg-10">
     <div class="buttons">
       <button (click)="viewDay()" [class]="this.configNavigator.selectMode == 'Day' ? 'selected' : ''">Day</button>
       <button (click)="viewWeek()" [class]="this.configNavigator.selectMode == 'Week' ? 'selected' : ''">Week</button>
@@ -67,25 +67,35 @@
         [class]="this.configNavigator.selectMode == 'Month' ? 'selected' : ''">Month</button>
     </div>
 
-    <daypilot-calendar [config]="configDay" [events]="events" (click)="openDilog(dialog)" #day>
+    <daypilot-calendar [config]="configDay" [events]="events" (click)="openDilog(dialog)" MoveBy="None" #day>
     </daypilot-calendar>
-    <daypilot-calendar [config]="configWeek" [events]="events" (click)="openDilog(dialog)" #week>
+    <daypilot-calendar [config]="configWeek" [events]="events" (click)="openDilog(dialog)" MoveBy="None" #week>
     </daypilot-calendar>
-    <daypilot-month [config]="configMonth" [events]="events" (click)="openDilog( dialog)" #month>
+    <daypilot-month [config]="configMonth" [events]="events" (click)="openDilog( dialog)" MoveBy="None" #month>
     </daypilot-month>
   </div>
 </div>
 
-<ng-template #dialog let-data let-ref="dialogRef">
-  <nb-card>
-    <nb-card-header>{{  eventData?.text }}</nb-card-header>
+<ng-template #dialog let-data="eventDetails" let-ref="dialogRef">
+  <nb-card class="card">
+    <nb-card-header>
+      <b class="dialog-title">{{  eventDetails?.eventname }}</b>
+
+      <div class="close-icon">
+        <nb-icon icon="close" (click)="ref.close()"></nb-icon>
+      </div>
+    </nb-card-header>
     <nb-card-body>
-      <p>Event ID : &nbsp;{{  eventData?.id }}</p>
-      <p>Starting Time : &nbsp;{{  eventData?.start | date }}</p>
-      <p>Ending Time : &nbsp;{{  eventData?.end | date}}</p>
+      <!-- <p>Event Name : &nbsp;</p> -->
+      <p>Event Description : &nbsp;{{  eventDetails?.description }}</p>     
+      <p>Starting Time : &nbsp;{{  eventDetails?.start | date : 'short' }}</p>
+      <p>Ending Time : &nbsp;{{  eventDetails?.end | date : 'short'}}</p>
+      <p class="dilog-error" *ngIf="eventDetails?.exitcode === 'Killed'">Event Status : &nbsp;{{  eventDetails?.exitcode }}</p>
+      <p *ngIf="eventDetails?.exitcode !== 'Killed'">Event Status : &nbsp;{{  eventDetails?.exitcode }}</p>
+
     </nb-card-body>
-    <nb-card-footer class="dialog-footer">
+    <!-- <nb-card-footer class="dialog-footer">
       <button nbButton (click)="ref.close()">Close</button>
-    </nb-card-footer>
+    </nb-card-footer> -->
   </nb-card>
 </ng-template>

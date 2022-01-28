@@ -1,87 +1,113 @@
 .container-fluid{
     display: flex;
-  }
-  .navigator {
-      width: 10%;
-      padding: 0px;
-    }
-  .content {
-      flex-grow: 1;
-      width: 85%;
-      padding: 0px 0px 10px 15px;
-    }
+}
+.navigator {
+  width: 10%;
+  padding: 0px;
+}
+.content {
+  flex-grow: 1;
+  width: 85%;
+  padding: 0px 0px 10px 15px;
+}
 
-    .block {
-      display: flex;
-      justify-content: space-between;
-    }
-  
-    .buttons {
-      margin-bottom: 10px;
+.block {
+  display: flex;
+  justify-content: space-between;
+}
 
-    }
-  
-    button {
-      background-color: #3c78d8;
-      color: white;
-      border: 0;
-      padding: .5rem 1rem;
-      width: 80px;
-      font-size: 14px;
-      cursor: pointer;
-      margin-right: 5px;
-    }
-  
-    button.selected {
-      background-color: #1c4587;
-    }
-    select {
-      margin-right: 10px;
-      width: -webkit-fill-available
-    }
+.buttons {
+  margin-bottom: 10px;
 
-    .dropdowns {
-      display: grid;
-    }
+}
 
-    .dropdown{
-      margin-top: 15px;
-    }
+button {
+  background-color: #3c78d8;
+  color: white;
+  border: 0;
+  padding: .5rem 1rem;
+  width: 80px;
+  font-size: 14px;
+  cursor: pointer;
+  margin-right: 5px;
+}
 
-    .legend{
-      margin-top: 25px;
-      padding: 5px;
-      background: whitesmoke;
-      border: 1px solid #ccc;      
-    }
+button.selected {
+  background-color: #1c4587;
+}
+select {
+  margin-right: 10px;
+  width: -webkit-fill-available
+}
 
-    .legend-title{
-      text-align: center;
-    }
+.dropdowns {
+  display: grid;
+}
 
-    .legend-view{
-      display: flex;
-      margin: 10px;
-    }
+.dropdown{
+  margin-top: 15px;
+}
 
-    .legend-text{
-      text-overflow: ellipsis;
-      overflow: hidden;
-      padding-left: 10px;
-    }
+.legend{
+  margin-top: 25px;
+  padding: 5px;
+  background: whitesmoke;
+  border: 1px solid #ccc;      
+}
 
-    .legend-marker{
-      display: inline-block;
-      width: 20px;
-      height: 10px;
-      vertical-align: middle;
-      user-select: none;
-    }
+.legend-title{
+  text-align: center;
+}
 
-    ul li {
-      list-style-type: none;
-    }
+.legend-view{
+  display: flex;
+  margin: 10px;
+}
 
-    .dialog-footer{
-      align-self: center;
-    }
+.legend-text{
+  text-overflow: ellipsis;
+  overflow: hidden;
+  padding-left: 10px;
+}
+
+.legend-marker{
+  display: inline-block;
+  width: 20px;
+  height: 10px;
+  vertical-align: middle;
+  user-select: none;
+}
+
+ul li {
+  list-style-type: none;
+}
+
+.dialog-footer{
+  align-self: center;
+}
+
+.close-icon{
+  text-align: end;
+  cursor: pointer;
+}
+
+.calendar_default_cell_inner,
+.calendar_default_event_inner,
+.calendar_default_alldayevent_inner{
+  color: white !important;
+}
+
+._event_inner{
+  color: white !important;
+}
+
+.card {
+  padding: 10px 40px;
+}
+
+.dialog-title{
+  color: #3366ff;
+}
+.dilog-error{
+  color: red;
+}

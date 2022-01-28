@@ -20,13 +20,11 @@ export class MoniteringComponent implements OnInit {
   @ViewChild("week") week!: DayPilotCalendarComponent;
   @ViewChild("month") month!: DayPilotMonthComponent;
   @ViewChild("navigator") nav!: DayPilotNavigatorComponent;
-  @ViewChild('dialog') dialog:TemplateRef<any>;
-
-
-  @Input() eventData = {};
 
   events: DayPilot.EventData[] = [];
   date = DayPilot.Date.today();
+  eventId = '';
+  eventDetails = {};
   server = {
     node: '',
     jobType: 'all',
@@ -39,7 +37,7 @@ export class MoniteringComponent implements OnInit {
     { name: 'Domain', value: 'domain' },
     { name: 'Command', value: 'command' }];
 
-    statusTypes = [
+  statusTypes = [
     { name: 'All', value: 'all' },
     { name: 'Error', value: 'error' },
     { name: 'Running', value: 'Running' },
@@ -54,12 +52,10 @@ export class MoniteringComponent implements OnInit {
     dayHeaderHeight: 30,
     titleHeight: 30,
     onVisibleRangeChanged: args => {
-      alert('1')
       this.loadEvents();
     }
   };
 
-  legendTitle = [];
 
   config: DayPilot.CalendarConfig = {
     // startDate: DayPilot.Date.today(),
@@ -81,9 +77,9 @@ export class MoniteringComponent implements OnInit {
         text: modal.result
       });
     },
-    onEventClick: function(args) {
-      console.log(args)
-      alert("Event clicked: " + args.e.text());
+    onEventClick: function (args) {
+      // console.log(args)
+      // alert("Event clicked: " + args.e.text());
     },
   };
 
@@ -98,34 +94,42 @@ export class MoniteringComponent implements OnInit {
   }
 
   configDay: DayPilot.CalendarConfig = {
-    onEventClick: function(args) {
-      this.eventData = args.e.data;
+    onEventClick: function (args) {
+      localStorage.setItem('eventId', args.e.data.id);
     },
   };
 
   configWeek: DayPilot.CalendarConfig = {
     viewType: "Week",
-    onTimeRangeSelected: async (args) => {
-      const modal = await DayPilot.Modal.prompt("Create a new event:", "Event 1");
-      const dp = args.control;
-      dp.clearSelection();
-      if (!modal.result) { return; }
-      dp.events.add(new DayPilot.Event({
-        start: args.start,
-        end: args.end,
-        id: DayPilot.guid(),
-        text: modal.result
-      }));
-    },
-    onEventClick: function(args) {
-      this.eventData = args.e.data;
+    // MoveBy : "None",
+    // CssOnly=true,
+    // EventArrangement : ArrangementType.SideBySide,
+    // useEventBoxes = "Never";
+    // onTimeRangeSelected: async (args) => {
+    //   return
+    //   const modal = await DayPilot.Modal.prompt("Create a new event:", "Event 1");
+    //   const dp = args.control;
+    //   dp.clearSelection();
+    //   if (!modal.result) { return; }
+    //   dp.events.add(new DayPilot.Event({
+    //     start: args.start,
+    //     end: args.end,
+    //     id: DayPilot.guid(),
+    //     text: modal.result,
+    //   }));
+    // },
+    onEventClick: function (args) {
+      args.preventDefault();
+      localStorage.setItem('eventId', args.e.data.id);
     },
   };
 
   configMonth: DayPilot.MonthConfig = {
-
+    onEventClick: function (args) {
+      args.preventDefault();
+      localStorage.setItem('eventId', args.e.data.id);
+    },
   };
-
 
   constructor(
     private ss: SinequaService,
@@ -148,14 +152,14 @@ export class MoniteringComponent implements OnInit {
       "password": "admin"
     }
     this.ss.getNodes(data).subscribe(resp => {
-      if (resp['methodresult'] === 'ok'){
+      if (resp['methodresult'] === 'ok') {
         this.nodes = resp['indexsize'];
         this.server.node = resp['indexsize'][0].value;
-      }      
+      }
     })
   }
 
-  async loadEvents() {
+  loadEvents() {
     let data = {
       "method": "dev.plugin",
       "plugin": "JobScheduleCalendar",
@@ -163,18 +167,18 @@ export class MoniteringComponent implements OnInit {
       "user": "admin",
       "password": "admin"
     }
-    await this.ss.getEvents(data).subscribe(resp => {
-      if (resp['methodresult'] === 'ok'){
-        console.log(resp)
-      let data = resp['events']     
-      this.events =  data.map( item => {
-        // item['bubbleHtml'] = '';
-        // item['bubbleHtml'] = "<div style='font-weight:bold'>Event Details</div><div>Scheduler Event 1</div>"
-        return item
-      });
-      // this.showLegend(this.events);
-      }      
-    })   
+    this.ss.getEvents(data).subscribe(resp => {
+      if (resp['methodresult'] === 'ok') {
+        let data = resp['events']
+        this.events = data.map(item => {
+          item['color'] = 'white'
+          return item
+        });
+        let legendTitle = [...new Set(data.map(item => item.backColor))]
+        console.log(legendTitle)
+        console.log(this.events)
+      }
+    })
     // this.events = [
     //   {
     //     "id": "/PlatformDashboard/JobStatus/|665A821BDEFE4E9B9716AC752A722B8E",
@@ -185,7 +189,7 @@ export class MoniteringComponent implements OnInit {
     //     "barBackColor": "#e69140",
     //     "backColor": "#e69140",
     //     bubbleHtml: "<div style='font-weight:bold'>Event Details</div><div>Scheduler Event 1</div>",
-        
+
     //   },
     //   {
     //     "id": "/PlatformDashboard/JobStatus/|9B0A6EAC90974CA28387216FC3B993F5",
@@ -212,33 +216,48 @@ export class MoniteringComponent implements OnInit {
     // ]
   }
 
-  
   loadEventsBasedonSelection() {
     let data = {
       "method": "dev.plugin",
       "plugin": "JobScheduleCalendar",
       "nodeName": this.server.node,
       "jobType": this.server.jobType,
-      "statusType" : this.server.statusType,
+      "statusType": this.server.statusType,
       "output": "json",
       "user": "admin",
       "password": "admin"
     }
     this.ss.getEvents(data).subscribe(resp => {
-      if (resp['methodresult'] === 'ok'){
+      if (resp['methodresult'] === 'ok') {
         this.events = resp['events'];
-      console.log(this.events)
-      // this.showLegend(this.events);
-      }      
-    })  
-    
+        console.log(this.events)
+      }
+    })
+
   }
 
-  showLegend(data){
-    this.legendTitle = [...new Map(data.map((item) => [item["text"], item])).values()];
+  getData() {
+    let data = {
+      "method": "dev.plugin",
+      "plugin": "CalendarEvenrtDetails",
+      "output": "json",
+      "user": "admin",
+      "password": "admin",
+      "ID": localStorage.getItem('eventId')
+    }
+    this.ss.getNodes(data).subscribe(resp => {
+      if (resp['methodresult'] === 'ok') {
+        this.eventDetails = resp['details'][0];
+      }
+    })
+
+
+  }
+
+  showLegend(data) {
+    // this.legendTitle = [...new Map(data.map((item) => [item["text"], item])).values()];
     // this.legendTitle = [...new Set(data.map(item => item.text))]
     // this.legendTitle = data.filter((a, i) => data.findIndex((s) => a.text === s.text) === i);
-    console.log(this.legendTitle)
   }
 
 
@@ -286,9 +305,13 @@ export class MoniteringComponent implements OnInit {
     }
   }
 
-  openDilog(dialog: TemplateRef<any>) {    
-    this.dialogService.open(
-      dialog,this.eventData);
+  openDilog(dialog: TemplateRef<any>) {
+    if (localStorage.getItem('eventId')) {
+      this.getData();
+      this.dialogService.open(
+        dialog, { context: this.eventDetails });
+    }
+    localStorage.setItem('eventId', '')
   }
-
 }
+
