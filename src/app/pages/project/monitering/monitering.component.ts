@@ -1,4 +1,4 @@
-import { Component, OnInit, ViewChild, TemplateRef, ViewContainerRef, Input } from '@angular/core';
+import { Component, OnInit, ViewChild, TemplateRef } from '@angular/core';
 import {
   DayPilot,
   DayPilotCalendarComponent,
@@ -7,6 +7,7 @@ import {
 } from "@daypilot/daypilot-lite-angular";
 import { NbDialogService } from '@nebular/theme';
 
+import { ToastrService } from '../../../shared/services/toastr.service';
 import { SinequaService } from '../../../shared/services/sinequa.service';
 
 @Component({
@@ -29,7 +30,7 @@ export class MoniteringComponent implements OnInit {
     node: '',
     jobType: 'all',
     statusType: 'all'
-  }
+  };
   nodes = [];
   jobTypes = [
     { name: 'All', value: 'all' },
@@ -54,33 +55,6 @@ export class MoniteringComponent implements OnInit {
     onVisibleRangeChanged: args => {
       this.loadEvents();
     }
-  };
-
-
-  config: DayPilot.CalendarConfig = {
-    // startDate: DayPilot.Date.today(),
-    viewType: "Week",
-    heightSpec: "Parent100Pct",
-    cellHeight: 30,
-    headerHeight: 30,
-    hourWidth: 60,
-    onTimeRangeSelected: async (args) => {
-      const modal = await DayPilot.Modal.prompt("Create a new event:", "Event 1");
-
-      const dp = args.control;
-      dp.clearSelection();
-      if (!modal.result) { return; }
-      dp.events.add({
-        start: args.start,
-        end: args.end,
-        id: DayPilot.guid(),
-        text: modal.result
-      });
-    },
-    onEventClick: function (args) {
-      // console.log(args)
-      // alert("Event clicked: " + args.e.text());
-    },
   };
 
   selectTomorrow() {
@@ -134,6 +108,7 @@ export class MoniteringComponent implements OnInit {
   constructor(
     private ss: SinequaService,
     private dialogService: NbDialogService,
+    private toastr: ToastrService
   ) {
     this.viewMonth();
   }
@@ -152,9 +127,12 @@ export class MoniteringComponent implements OnInit {
       "password": "admin"
     }
     this.ss.getNodes(data).subscribe(resp => {
+      console.log(resp)
       if (resp['methodresult'] === 'ok') {
         this.nodes = resp['indexsize'];
         this.server.node = resp['indexsize'][0].value;
+      } else {
+        this.toastr.showToast('danger', 'Something went wrong', 'Please try after sometime')
       }
     })
   }
@@ -168,6 +146,7 @@ export class MoniteringComponent implements OnInit {
       "password": "admin"
     }
     this.ss.getEvents(data).subscribe(resp => {
+      console.log(resp)
       if (resp['methodresult'] === 'ok') {
         let data = resp['events']
         this.events = data.map(item => {
@@ -177,6 +156,8 @@ export class MoniteringComponent implements OnInit {
         let legendTitle = [...new Set(data.map(item => item.backColor))]
         console.log(legendTitle)
         console.log(this.events)
+      } else {
+        this.toastr.showToast('danger', 'Something went wrong', 'Please try after sometime')
       }
     })
     // this.events = [
@@ -228,9 +209,12 @@ export class MoniteringComponent implements OnInit {
       "password": "admin"
     }
     this.ss.getEvents(data).subscribe(resp => {
+      console.log(resp)
       if (resp['methodresult'] === 'ok') {
         this.events = resp['events'];
         console.log(this.events)
+      } else {
+        this.toastr.showToast('danger', 'Something went wrong', 'Please try after sometime')
       }
     })
 
@@ -248,6 +232,8 @@ export class MoniteringComponent implements OnInit {
     this.ss.getNodes(data).subscribe(resp => {
       if (resp['methodresult'] === 'ok') {
         this.eventDetails = resp['details'][0];
+      } else {
+        this.toastr.showToast('danger', 'Something went wrong', 'Please try after sometime')
       }
     })
 
@@ -313,5 +299,6 @@ export class MoniteringComponent implements OnInit {
     }
     localStorage.setItem('eventId', '')
   }
+
 }
 
