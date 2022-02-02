@@ -1,1 +1,32 @@
-<p>platform-monitering works!</p>
+<div class="col-md-12 col-lg-12">
+  <nb-card>
+    <nb-tabset>
+      <nb-tab tabTitle="Websites">
+        <div class="table-top">
+          <!-- <div class="search">
+            <label class="search-label" for="search">Search:&nbsp;</label>
+            <input nbInput id="search" class="search-input">
+          </div> -->
+          <!-- <button class="add-button" nbButton status="primary" hero>Refresh</button> -->
+          <button nbButton outline status="primary">
+            <i class="nb-loop" style="color:green;font-size: x-large"></i>Refresh
+          </button>
+        </div>
+        <div class="smart-table">
+          <ng2-smart-table [settings]="settings" [source]="source" (createConfirm)="addRecord($event)"
+            (editConfirm)="updateRecord($event)" (deleteConfirm)="onDeleteConfirm($event)">
+          </ng2-smart-table>
+        </div>
+
+      </nb-tab>
+      <nb-tab tabTitle="Servers">
+        <b>Tab server works</b>
+
+      </nb-tab>
+      <nb-tab tabTitle="Index">
+        <b>Tab index works</b>
+
+      </nb-tab>
+    </nb-tabset>
+  </nb-card>
+</div>

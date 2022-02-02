@@ -2,7 +2,10 @@ import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { CUSTOM_ELEMENTS_SCHEMA, NO_ERRORS_SCHEMA } from '@angular/core';
 
-import { NbCardModule, NbProgressBarModule, NbIconModule } from '@nebular/theme';
+import { NbCardModule, NbProgressBarModule, NbIconModule, NbTabsetModule,
+  NbButtonModule, NbInputModule } from '@nebular/theme';
+import { Ng2SmartTableModule } from 'ng2-smart-table';
+
 import { ECommerceModule } from '../e-commerce/e-commerce.module';
 import { CountryOrdersMapService } from '../e-commerce/country-orders/map/country-orders-map.service';
 
@@ -28,6 +31,10 @@ import { FormsModule } from '@angular/forms';
     NbCardModule,    
     NbProgressBarModule,
     NbIconModule,
+    NbTabsetModule,
+    NbButtonModule,
+    NbInputModule,
+    Ng2SmartTableModule,
     CommonModule,
     ProjectRoutingModule,
     ECommerceModule,

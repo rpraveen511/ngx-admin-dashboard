@@ -87,14 +87,7 @@ ul li {
 }
 
 .close-icon{
-  text-align: end;
   cursor: pointer;
-}
-
-.calendar_default_cell_inner,
-.calendar_default_event_inner,
-.calendar_default_alldayevent_inner{
-  color: white !important;
 }
 
 ._event_inner{
@@ -105,9 +98,21 @@ ul li {
   padding: 10px 40px;
 }
 
+.dilog-header{
+  display: flex;
+  justify-content: space-between;
+}
+
 .dialog-title{
   color: #3366ff;
 }
 .dilog-error{
   color: red;
+}
+
+
+.calendar_default_cell_inner,
+.calendar_default_event_inner,
+.calendar_default_alldayevent_inner{
+  color: white !important;
 }

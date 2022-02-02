@@ -68,9 +68,11 @@ export class MoniteringComponent implements OnInit {
   }
 
   configDay: DayPilot.CalendarConfig = {
+    eventMoveHandling :'Disabled',
     onEventClick: function (args) {
       localStorage.setItem('eventId', args.e.data.id);
     },
+    
   };
 
   configWeek: DayPilot.CalendarConfig = {
@@ -92,17 +94,26 @@ export class MoniteringComponent implements OnInit {
     //     text: modal.result,
     //   }));
     // },
+    eventMoveHandling :'Disabled',
+    eventResizeHandling: 'Disabled',    
     onEventClick: function (args) {
       args.preventDefault();
       localStorage.setItem('eventId', args.e.data.id);
     },
+    // onBeforeEventRender : function(args) {
+    //   return args.data.fontColor = "#fff";
+    // }
   };
 
   configMonth: DayPilot.MonthConfig = {
+    eventMoveHandling :'Disabled',
     onEventClick: function (args) {
       args.preventDefault();
       localStorage.setItem('eventId', args.e.data.id);
     },
+    onEventClicked : function(args) {
+      alert("clicked: " + args.e.id());
+    }
   };
 
   constructor(
@@ -220,10 +231,10 @@ export class MoniteringComponent implements OnInit {
 
   }
 
-  getData() {
+  getEventData() {
     let data = {
       "method": "dev.plugin",
-      "plugin": "CalendarEvenrtDetails",
+      "plugin": "CalendarEventDetails",
       "output": "json",
       "user": "admin",
       "password": "admin",
@@ -231,7 +242,12 @@ export class MoniteringComponent implements OnInit {
     }
     this.ss.getNodes(data).subscribe(resp => {
       if (resp['methodresult'] === 'ok') {
-        this.eventDetails = resp['details'][0];
+        // this.eventDetails = resp['details'][0];
+        let eventdata = resp['details'][0];
+        if(eventdata.stats){
+          eventdata.stats = eventdata.stats.split("\r\n");
+        }
+        this.eventDetails = eventdata;        
       } else {
         this.toastr.showToast('danger', 'Something went wrong', 'Please try after sometime')
       }
@@ -293,11 +309,15 @@ export class MoniteringComponent implements OnInit {
 
   openDilog(dialog: TemplateRef<any>) {
     if (localStorage.getItem('eventId')) {
-      this.getData();
+      this.getEventData();
       this.dialogService.open(
         dialog, { context: this.eventDetails });
     }
     localStorage.setItem('eventId', '')
+  }
+
+  copyUrl(){
+    // navigator.clipboard.writeText().then().catch(e => console.error(e));
   }
 
 }

@@ -22,7 +22,7 @@
       </div>
       <div class="dropdown">
         <label><b>STATUS : &nbsp;</b></label>
-        <select id="statusType" [(ngModel)]="server.statusType" (change)="selectStatus($event)">          
+        <select id="statusType" [(ngModel)]="server.statusType" (change)="selectStatus($event)">
           <option *ngFor="let statusType of statusTypes" value="{{statusType.value}}">
             {{ statusType.name }}
           </option>
@@ -77,21 +77,37 @@
 </div>
 
 <ng-template #dialog let-data="eventDetails" let-ref="dialogRef">
-  <nb-card class="card">
-    <nb-card-header>
-      <b class="dialog-title">{{  eventDetails?.eventname }}</b>
 
+
+  <nb-card class="card">
+
+    <nb-card-header class="dilog-header">
+      <div>
+        <b class="dialog-title">{{ eventDetails?.eventname }}</b>
+      </div>
       <div class="close-icon">
         <nb-icon icon="close" (click)="ref.close()"></nb-icon>
       </div>
+
     </nb-card-header>
     <nb-card-body>
       <!-- <p>Event Name : &nbsp;</p> -->
-      <p>Event Description : &nbsp;{{  eventDetails?.description }}</p>     
-      <p>Starting Time : &nbsp;{{  eventDetails?.start | date : 'short' }}</p>
-      <p>Ending Time : &nbsp;{{  eventDetails?.end | date : 'short'}}</p>
-      <p class="dilog-error" *ngIf="eventDetails?.exitcode === 'Killed'">Event Status : &nbsp;{{  eventDetails?.exitcode }}</p>
-      <p *ngIf="eventDetails?.exitcode !== 'Killed'">Event Status : &nbsp;{{  eventDetails?.exitcode }}</p>
+      <p>Event Description : &nbsp;{{ eventDetails?.description }}</p>
+      <p>Starting Time : &nbsp;{{ eventDetails?.start | date : 'short' }}</p>
+      <p>Ending Time : &nbsp;{{ eventDetails?.end | date : 'short'}}</p>
+      <p>Log URL : &nbsp;
+        <a href="{{eventDetails?.originalURL}}" target="_blank">click here to view the log</a>
+      </p>
+      <p class="dilog-error" *ngIf="eventDetails?.exitcode === 'Killed'">Event Status : &nbsp;{{ eventDetails?.exitcode
+        }}</p>
+      <p *ngIf="eventDetails?.exitcode !== 'Killed'">Event Status : &nbsp;{{ eventDetails?.exitcode }}</p>
+      <ng-container *ngIf="!eventDetails?.stats">
+        <p>Stats : &nbsp;<span>{{ eventDetails?.stats }}</span></p>
+      </ng-container>
+      <ng-container *ngIf="eventDetails?.stats?.length > 0">
+        <p>Stats : &nbsp;</p>
+        <div *ngFor="let stat of eventDetails.stats">{{ stat }}</div>
+      </ng-container>
 
     </nb-card-body>
     <!-- <nb-card-footer class="dialog-footer">
