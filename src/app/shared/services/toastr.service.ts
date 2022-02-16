@@ -15,7 +15,6 @@ export class ToastrService {
 
   config: NbToastrConfig;
 
-  index = 0;
   destroyByClick = true;
   duration = 4000;
   hasIcon = true;
@@ -61,12 +60,11 @@ export class ToastrService {
       position: this.position,
       preventDuplicates: this.preventDuplicates,
     };
-    const titleContent = title ? `. ${title}` : '';
+    const titleContent = title ? ` ${title}` : '';
 
-    this.index += 1;
     this.toastrService.show(
       body,
-      `Toast ${this.index}${titleContent}`,
+      `${titleContent}`,
       config);
   }
 }

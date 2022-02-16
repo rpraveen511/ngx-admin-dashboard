@@ -85,7 +85,7 @@ export class CalendarComponent implements OnInit {
       "user": "admin",
       "password": "admin"
     }
-    this.ss.getEvents(data).subscribe(resp => {
+    this.ss.getData(data).subscribe(resp => {
       this.events = resp['events'];
       console.log(this.events)
     })

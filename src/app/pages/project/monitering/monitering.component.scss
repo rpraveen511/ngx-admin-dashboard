@@ -1,101 +1,14 @@
-.container-fluid{
-    display: flex;
+@media only screen and (max-width: 950px) {
+  .dropdown {
+     padding-bottom: 15px;
+  }
 }
-.navigator {
-  width: 10%;
-  padding: 0px;
-}
-.content {
-  flex-grow: 1;
-  width: 85%;
-  padding: 0px 0px 10px 15px;
-}
-
-.block {
-  display: flex;
-  justify-content: space-between;
-}
-
-.buttons {
-  margin-bottom: 10px;
-
-}
-
-button {
-  background-color: #3c78d8;
-  color: white;
-  border: 0;
-  padding: .5rem 1rem;
-  width: 80px;
-  font-size: 14px;
-  cursor: pointer;
-  margin-right: 5px;
-}
-
-button.selected {
-  background-color: #1c4587;
-}
-select {
-  margin-right: 10px;
-  width: -webkit-fill-available
-}
-
-.dropdowns {
-  display: grid;
-}
-
-.dropdown{
-  margin-top: 15px;
-}
-
-.legend{
-  margin-top: 25px;
-  padding: 5px;
-  background: whitesmoke;
-  border: 1px solid #ccc;      
-}
-
-.legend-title{
-  text-align: center;
-}
-
-.legend-view{
-  display: flex;
-  margin: 10px;
-}
-
-.legend-text{
-  text-overflow: ellipsis;
-  overflow: hidden;
-  padding-left: 10px;
-}
-
-.legend-marker{
-  display: inline-block;
-  width: 20px;
-  height: 10px;
-  vertical-align: middle;
-  user-select: none;
-}
-
-ul li {
-  list-style-type: none;
-}
-
 .dialog-footer{
   align-self: center;
 }
 
 .close-icon{
   cursor: pointer;
-}
-
-._event_inner{
-  color: white !important;
-}
-
-.card {
-  padding: 10px 40px;
 }
 
 .dilog-header{
@@ -110,9 +23,65 @@ ul li {
   color: red;
 }
 
-
-.calendar_default_cell_inner,
-.calendar_default_event_inner,
-.calendar_default_alldayevent_inner{
-  color: white !important;
+.dropdowns{
+  display: flex;
+  padding: 10px;
+  margin: 10px;
+  justify-content: space-evenly;
 }
+
+label{  
+  font-family: Roboto;
+  font-style: normal;
+  font-weight: 500;
+  font-size: 14px;
+  line-height: 16px;
+  color: rgba(0, 0, 0, 0.4);
+}
+select{
+  padding: 5px;
+  background: #FFFFFF;
+  border: 1px solid rgba(32, 94, 172, 0.9);
+  border-radius: 5px;
+  margin-right: 10px;
+  width: -webkit-fill-available
+}
+
+option{
+  font-family: Roboto;
+  font-style: normal;
+  font-weight: 500;
+  font-size: 14px;
+  line-height: 16px;
+  color: rgba(0, 0, 0, 0.5);
+
+}
+
+.title{
+  color: #3366ff;
+  padding: 1rem 1rem 0 1rem;
+}
+
+.nb-menu,.menu-item{
+  background: rgba(32, 94, 172, 0.1);
+}
+
+.dateCard{
+  display: flex;
+  justify-content: center;
+  i{
+    cursor: pointer;
+  }
+  span{
+    margin-top: 0.1rem;
+    padding: 0 10px 0 10px;
+  }
+  nb-card{
+    display: inline-flex;
+    padding: 20px;
+  }
+  .row{
+    padding: 0px 20px;
+  }
+}
+

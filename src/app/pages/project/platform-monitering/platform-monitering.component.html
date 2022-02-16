@@ -13,18 +13,113 @@
           </button>
         </div>
         <div class="smart-table">
-          <ng2-smart-table [settings]="settings" [source]="source" (createConfirm)="addRecord($event)"
+          <ng2-smart-table [settings]="websiteSettings" [source]="websiteSource" (createConfirm)="addRecord($event)"
             (editConfirm)="updateRecord($event)" (deleteConfirm)="onDeleteConfirm($event)">
           </ng2-smart-table>
         </div>
 
       </nb-tab>
       <nb-tab tabTitle="Servers">
-        <b>Tab server works</b>
-
+        <nb-card>
+          <nb-tabset>
+            <nb-tab tabTitle="Nodes">
+              <!-- nodes -->
+              <div class="">
+                <div class="table-servers">
+                  <div style="align-self: center;">
+                    <b>&nbsp;Nodes :</b>
+                  </div>
+                  <button nbButton outline status="primary" (click)="loadData('node',true)">
+                    <i class="nb-loop" style="color:green;font-size: x-large"></i>Refresh
+                  </button>
+                </div>
+                <div class="smart-table">
+                  <ng2-smart-table [settings]="serverSettings" [source]="nodeSource"m>
+                  </ng2-smart-table>
+                </div>
+              </div>
+            </nb-tab>
+            <nb-tab tabTitle="Engines">
+              <!-- engines -->
+              <div class="">
+                <div class="table-servers">
+                  <div style="align-self: center;">
+                    <b>&nbsp;Engines :</b>
+                  </div>
+                  <button nbButton outline status="primary" (click)="loadData('engine',true)">
+                    <i class="nb-loop" style="color:green;font-size: x-large"></i>Refresh
+                  </button>
+                </div>
+                <div class="smart-table">
+                  <ng2-smart-table [settings]="serverSettings" [source]="engineSource">
+                  </ng2-smart-table>
+                </div>
+              </div>
+            </nb-tab>
+            <nb-tab tabTitle="Indexers">
+              <!-- Indexers -->
+              <div class="">
+                <div class="table-servers">
+                  <div style="align-self: center;">
+                    <b>&nbsp;Indexers :</b>
+                  </div>
+                  <button nbButton outline status="primary" (click)="loadData('indexer',true)">
+                    <i class="nb-loop" style="color:green;font-size: x-large"></i>Refresh
+                  </button>
+                </div>
+                <div class="smart-table">
+                  <ng2-smart-table [settings]="serverSettings" [source]="indexerSource">
+                  </ng2-smart-table>
+                </div>
+              </div>
+            </nb-tab>
+            <nb-tab tabTitle="webapp">
+              <!-- webapp -->
+              <div class="">
+                <div class="table-servers">
+                  <div style="align-self: center;">
+                    <b>&nbsp;Web app :</b>
+                  </div>
+                  <button nbButton outline status="primary" (click)="loadData('webapp',true)">
+                    <i class="nb-loop" style="color:green;font-size: x-large"></i>Refresh
+                  </button>
+                </div>
+                <div class="smart-table">
+                  <ng2-smart-table [settings]="serverSettings" [source]="webappSource">
+                  </ng2-smart-table>
+                </div>
+              </div>
+            </nb-tab>
+            <nb-tab tabTitle="workers">
+              <!-- worker -->
+              <div class="">
+                <div class="table-servers">
+                  <div style="align-self: center;">
+                    <b>&nbsp;Workers :</b>
+                  </div>
+                  <button nbButton outline status="primary" (click)="loadData('worker',true)">
+                    <i class="nb-loop" style="color:green;font-size: x-large"></i>Refresh
+                  </button>
+                </div>
+                <div class="smart-table">
+                  <ng2-smart-table [settings]="serverSettings" [source]="workerSource">
+                  </ng2-smart-table>
+                </div>
+              </div>
+            </nb-tab>
+          </nb-tabset>
+        </nb-card>
       </nb-tab>
       <nb-tab tabTitle="Index">
-        <b>Tab index works</b>
+        <div class="table-top">
+          <button nbButton outline status="primary" (click)="loadIndexes(true)">
+            <i class="nb-loop" style="color:green;font-size: x-large"></i>Refresh
+          </button>
+        </div>
+        <div class="smart-table">
+          <ng2-smart-table [settings]="indexSettings" [source]="indexSource">
+          </ng2-smart-table>
+        </div>
 
       </nb-tab>
     </nb-tabset>
