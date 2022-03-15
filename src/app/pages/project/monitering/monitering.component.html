@@ -1,57 +1,50 @@
 <div class="container-fluid">
   <nb-card>
-    <!-- <div class="title"><b>Job Monitoring</b></div> -->
     <div class="row dropdowns">
       <div class="dropdown col-md-6 col-lg-3">
-        <label>Calendar View : &nbsp;</label>
-        <select id="view" (change)="selectView($event)">
-          <option *ngFor="let view of views" value="{{view.value}}">
-            {{view.value}}
-          </option>
-        </select>
-      </div>
+        <label>Calendar View : &nbsp;</label>        
+        <nb-select id="view" [(ngModel)]="configNavigator.selectMode" (selectedChange)="selectView($event)">
+          <nb-option *ngFor="let view of views" value="{{view.value}}">
+            {{view.value}}</nb-option>          
+        </nb-select>
+      </div>      
       <div class="dropdown col-md-6 col-lg-3">
         <label>NODE : &nbsp;</label>
-        <select id="node" [(ngModel)]="server.node" (change)="selectNode($event)">
-          <option *ngFor="let node of nodes" value="{{node.label}}">
-            {{ node.label }}
-          </option>
-        </select>
+        <nb-select id="node"  [(ngModel)]="server.node" (selectedChange)="selectNode($event)">
+          <nb-option *ngFor="let node of nodes" value="">
+            {{ node.label }}</nb-option>          
+        </nb-select>
       </div>
       <div class="dropdown col-md-6 col-lg-3">
         <label>JOB TYPE : &nbsp;</label>
-        <select id="jobType" [(ngModel)]="server.jobType" (change)="selectJobType($event)">
-          <option *ngFor="let jobType of jobTypes" value="{{jobType.value}}">
-            {{ jobType.name }}
-          </option>
-        </select>
+        <nb-select id="jobType" [(ngModel)]="server.jobType" (selectedChange)="selectJobType($event)">
+          <nb-option *ngFor="let jobType of jobTypes" value="{{jobType.value}}">
+            {{ jobType.name }}</nb-option>          
+        </nb-select>
       </div>
       <div class="dropdown col-md-6 col-lg-3">
         <label>STATUS : &nbsp;</label>
-        <select id="statusType" [(ngModel)]="server.statusType" (change)="selectStatus($event)">
-          <option *ngFor="let statusType of statusTypes" value="{{statusType.value}}">
-            {{ statusType.name }}
-          </option>
-        </select>
+        <nb-select id="statusType" [(ngModel)]="server.statusType" (selectedChange)="selectStatus($event)">
+          <nb-option [ngclass]="statusType.name" *ngFor="let statusType of statusTypes" value="{{statusType.value}}">
+            <span class="elipsis"></span>{{ statusType.name }}</nb-option>          
+        </nb-select>
       </div>
     </div>
-  </nb-card>
+  </nb-card>  
   <div class="dateCard">
     <nb-card>
       <div class="row">
-        <i class="nb-angle-double-left" style="font-size: x-large" (click)="changeDate('previous')"></i>
-        <span><i class="fas fa-calendar-alt"></i></span>      
-        <!-- <span *ngIf="configNavigator.selectMode === 'Day'">{{date | date:'fullDate'}}</span>
-        <span *ngIf="configNavigator.selectMode === 'Week'">{{date | date:'longDate'}}</span>
-        <span *ngIf="configNavigator.selectMode === 'Month'">{{date | date:'longDate'}}</span> -->
-        <span>{{ dateDisplayFormat }}</span>
-  
-        <i class="nb-angle-double-right" style="font-size: x-large" (click)="changeDate('next')"></i>
-      </div>
-
-    </nb-card>
-        
-  </div>
+        <i class="nb-arrow-left click" style="font-size: x-large" (click)="changeDate('previous')"></i>
+        <span><i class="fas fa-calendar-alt" (click)="displayNavigator()"></i></span>       
+        <span><b style="cursor: pointer;" (click)="displayNavigator()">{{ dateDisplayFormat }}</b></span>  
+        <i class="nb-arrow-right click" style="font-size: x-large" (click)="changeDate('next')"></i>
+      </div>      
+    </nb-card>  
+    <div class="navigator" *ngIf="showNavigator">
+      <daypilot-navigator [config]="configNavigator" [events]="events" [(date)]="date" (dateChange)="changeDateNav($event)"
+        #navigator></daypilot-navigator>
+    </div>      
+  </div>  
   <nb-card>
     <daypilot-calendar [config]="configDay" [events]="events" (click)="openDilog(dialog)" MoveBy="None" #day>
     </daypilot-calendar>
@@ -61,76 +54,6 @@
     </daypilot-month>
   </nb-card>
 </div>
-
-
-
-
-<!-- <div class="navigator col-md-4 col-lg-3 col-xl-2">
-      <daypilot-navigator [config]="configNavigator" [events]="events" [(date)]="date" (dateChange)="changeDate($event)"
-        #navigator></daypilot-navigator>
-  
-      <div class="dropdowns">
-        <div class="dropdown">
-          <label><b>NODE : &nbsp;</b></label>
-          <select id="node" [(ngModel)]="server.node" (change)="selectNode($event)">
-            <option *ngFor="let node of nodes" value="{{node.label}}">
-              {{ node.label }}
-            </option>
-          </select>
-        </div>
-        <div class="dropdown">
-          <label><b>JOB TYPE : &nbsp;</b></label>
-          <select id="jobType" [(ngModel)]="server.jobType" (change)="selectJobType($event)">
-            <option *ngFor="let jobType of jobTypes" value="{{jobType.value}}">
-              {{ jobType.name }}
-            </option>
-          </select>
-        </div>
-        <div class="dropdown">
-          <label><b>STATUS : &nbsp;</b></label>
-          <select id="statusType" [(ngModel)]="server.statusType" (change)="selectStatus($event)">
-            <option *ngFor="let statusType of statusTypes" value="{{statusType.value}}">
-              {{ statusType.name }}
-            </option>
-          </select>
-        </div>
-      </div>
-  
-      
-  
-      <div class="legend">
-        <div class="legend-title">
-          <b class="legend-text">Status Type</b>
-        </div>
-        <div class="legend-view">
-          <div><span class="legend-marker" style="background : rgb(0, 214, 143);"></span></div>
-          <div class="legend-text">Ok</div>
-        </div>
-        <div class="legend-view">
-          <div><span class="legend-marker" style="background : rgb(51, 102, 255);"></span></div>
-          <div class="legend-text">Running</div>
-        </div>
-        <div class="legend-view">
-          <div><span class="legend-marker" style="background : #ff3d71;"></span></div>
-          <div class="legend-text">Error</div>
-        </div>
-      </div>
-    </div>
-    <div class="content col-md-8 col-lg-9 col-xl-10">
-      <div class="buttons">
-        <button (click)="viewDay()" [class]="this.configNavigator.selectMode == 'Day' ? 'selected' : ''">Day</button>
-        <button (click)="viewWeek()" [class]="this.configNavigator.selectMode == 'Week' ? 'selected' : ''">Week</button>
-        <button (click)="viewMonth()" [class]="this.configNavigator.selectMode == 'Month' ? 'selected' : ''">Month</button>
-      </div>
-  
-      <daypilot-calendar [config]="configDay" [events]="events" (click)="openDilog(dialog)" MoveBy="None" #day>
-      </daypilot-calendar>
-      <daypilot-calendar [config]="configWeek" [events]="events" (click)="openDilog(dialog)" MoveBy="None" #week>
-      </daypilot-calendar>
-      <daypilot-month [config]="configMonth" [events]="events" (click)="openDilog(dialog)" MoveBy="None" #month>
-      </daypilot-month>
-    </div>   -->
-
 <ng-template #dialog let-data="eventDetails" let-ref="dialogRef">
   <nb-card class="card">
     <nb-card-header class="dilog-header">
@@ -142,7 +65,6 @@
       </div>
     </nb-card-header>
     <nb-card-body>
-      <!-- <p>Event Name : &nbsp;</p> -->
       <p>Event Description : &nbsp;{{ eventDetails?.description }}</p>
       <p>Starting Time : &nbsp;{{ eventDetails?.start | date : 'short' }}</p>
       <p>Ending Time : &nbsp;{{ eventDetails?.end | date : 'short'}}</p>
@@ -152,9 +74,6 @@
       <p class="dilog-error" *ngIf="eventDetails?.exitcode === 'Killed'">Event Status : &nbsp;{{ eventDetails?.exitcode
         }}</p>
       <p *ngIf="eventDetails?.exitcode !== 'Killed'">Event Status : &nbsp;{{ eventDetails?.exitcode }}</p>
-      <ng-container *ngIf="!eventDetails?.stats">
-        <p>Stats : &nbsp;<span>{{ eventDetails?.stats }}</span></p>
-      </ng-container>
       <ng-container *ngIf="eventDetails?.stats?.length > 0">
         <p>Stats : &nbsp;</p>
         <div *ngFor="let stat of eventDetails.stats">{{ stat }}</div>

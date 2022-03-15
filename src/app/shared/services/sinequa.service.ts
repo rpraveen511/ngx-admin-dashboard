@@ -44,6 +44,12 @@ export class SinequaService extends DataService {
       return this.create(url, resource, this.get_headers());
     }
 
+    postData(data) {
+      const url = this.baseApiURL + 'dev.plugin';
+      const resource = this.format_and_get_resource(data);
+      return this.create(url, resource, this.get_headers());
+    }
+
     getNodes(data) {
       const url = this.baseApiURL + 'dev.plugin';
       const resource = this.format_and_get_resource(data);
@@ -52,6 +58,12 @@ export class SinequaService extends DataService {
 
     getServerStatus(data) {
       const url = this.baseApiURL + 'operation.serverstatus';
+      const resource = this.format_and_get_resource(data);
+      return this.create(url, resource, this.get_headers());
+    }
+
+    getApps(data) {
+      const url = this.baseApiURL + 'admin.config';
       const resource = this.format_and_get_resource(data);
       return this.create(url, resource, this.get_headers());
     }

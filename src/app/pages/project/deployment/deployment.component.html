@@ -1,1 +1,83 @@
-<p>deployment works!</p>
+<div class="col-md-12 col-lg-12">
+  <nb-card>
+    <nb-tabset>
+      <nb-tab tabTitle="Admin Configuration">
+        <nb-card class="content">
+          <div class="element">
+            <label class="col-2"><b>FROM : &nbsp;</b></label>
+            <nb-select class="col-10" id="view">
+              <nb-option value="">
+              </nb-option>
+            </nb-select>
+          </div>
+          <div class="element">
+            <label class="col-2"><b>TO : &nbsp;</b></label>
+            <nb-select class="col-10" id="node">
+              <nb-option value="">
+              </nb-option>
+            </nb-select>
+          </div>
+          <div class="element">
+            <label class="col-2"><b>Include Files : &nbsp;</b></label>
+            <input type="file" class="col-7" style="margin-left: 15px;" id="incfile" name="incfile" multiple nbInput
+              fullWidth shape="rectangle">
+          </div>
+          <div class="element">
+            <label class="col-2"><b>Exclude Files : &nbsp;</b></label>
+            <input type="file" class="col-7" style="margin-left: 15px;" id="excfile" name="excfile" multiple nbInput
+              fullWidth shape="rectangle">
+          </div>
+          <nb-checkbox><b>OverWrite</b></nb-checkbox>
+          <div class="buttons">
+            <button class="cancel" nbButton status="danger" outline>Cancel</button>
+            <button nbButton status="success" outline>Run Task</button>
+
+          </div>
+        </nb-card>
+      </nb-tab>
+      <nb-tab tabTitle="Server Configuration">
+        <nb-card class="content">
+          <div class="element">
+            <label class="col-5"><b>File(To be Uploaded/Modified):&nbsp;</b></label>            
+            <input type="file" class="col-5" id="configfile" name="configfile" multiple nbInput fullWidth
+              shape="rectangle">
+          </div>
+          <div class="element">
+            <label class="col-5"><b>Server :&nbsp;</b></label>
+            <nb-select id="node" [(ngModel)]="server.node" (selectedChange)="selectNode($event)">
+              <nb-option *ngFor="let node of nodes" value="">
+                {{ node.label }}</nb-option>
+            </nb-select>
+          </div>
+          <div class="element">
+            <label class="col-5"><b>Path(Where the file has to be placed) :&nbsp;</b></label>
+            <input class="col-5" type="text" nbInput fullWidth fieldSize="medium" placeholder="Enter Path">
+          </div>
+          <nb-checkbox><b>OverWrite</b></nb-checkbox>
+          <div class="buttons">
+            <button class="cancel" nbButton status="danger" outline>Cancel</button>
+            <button nbButton status="success" outline>Run Task</button>
+          </div>
+        </nb-card>
+      </nb-tab>
+      <nb-tab tabTitle="Sinequa Upgrade">
+        <nb-card class="content">
+          <div class="element">
+            <label class="col-5"><b>Server Name:&nbsp;</b></label>
+            <nb-select class="col-7" id="servers" [(ngModel)]="server.name" 
+              (selectedChange)="selectServer($event)">
+              <nb-option *ngFor="let server of servernames" value="server">
+                {{ server }}</nb-option>
+            </nb-select>
+          </div>
+          <!-- <nb-checkbox><b>OverWrite</b></nb-checkbox> -->
+          <div class="buttons upgradebtn">
+            <button *ngIf="!upgradeFlag" class="cancel" nbButton status="danger" outline
+              (click)="upgradeServer()">Cancel</button>
+            <button *ngIf="upgradeFlag" nbButton status="success" outline (click)="upgradeServer()">Upgrade</button>
+          </div>
+        </nb-card>
+      </nb-tab>
+    </nb-tabset>
+  </nb-card>
+</div>

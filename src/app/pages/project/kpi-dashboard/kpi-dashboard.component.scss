@@ -16,3 +16,20 @@
     }
   }
 }
+
+.pie-header{
+  display: flex;
+  justify-content: space-around;
+}
+
+.card-header{
+  display: flex;
+  justify-content: space-between;
+}
+
+.nb-arrow-thin-down{
+  color: black;
+  font-size: x-large;
+  font-weight: 600;
+  cursor: pointer;
+}

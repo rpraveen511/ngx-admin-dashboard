@@ -8,7 +8,7 @@
             <input nbInput id="search" class="search-input">
           </div> -->
           <!-- <button class="add-button" nbButton status="primary" hero>Refresh</button> -->
-          <button nbButton outline status="primary">
+          <button nbButton outline status="primary" (click)="loadWebsitesData('refresh')">
             <i class="nb-loop" style="color:green;font-size: x-large"></i>Refresh
           </button>
         </div>
@@ -120,7 +120,6 @@
           <ng2-smart-table [settings]="indexSettings" [source]="indexSource">
           </ng2-smart-table>
         </div>
-
       </nb-tab>
     </nb-tabset>
   </nb-card>

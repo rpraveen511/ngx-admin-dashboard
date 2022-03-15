@@ -1,0 +1,52 @@
+@import 'jqwidgets-ng/jqwidgets/styles/jqx.base.css';
+
+.content{
+  padding: 15px 10px;
+}
+.dropdowns{
+    display: flex;
+    padding: 10px;
+    margin: 10px;
+    justify-content: space-evenly;
+  }
+  .dropdown {
+    padding-bottom: 15px;
+ }
+
+ nb-checkbox{
+   padding: 5px 15px;
+ }
+
+ button{
+   margin: 0px 5px;
+ }
+
+ .element{
+   margin: 3px 0px;
+ }
+
+ .buttons{
+  text-align: center;
+ }
+
+ nb-option:hover, nb-option.selected{
+  color: black !important;
+  background: rgba(32, 94, 172, 0.1) !important;
+  position: relative;
+  &::after {
+   content: '';
+   display: inline-block;
+   width: 5px;
+   height: 100%;
+   background: rgb(67, 31, 226);
+   position: absolute;
+   right: 0;
+   top: 0;
+   border-top-left-radius: 8px;
+   border-bottom-left-radius: 8px;
+ }
+}
+
+.upgradebtn{
+  margin-top: 10px;
+}

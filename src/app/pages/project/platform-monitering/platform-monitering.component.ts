@@ -4,7 +4,7 @@ import { DomSanitizer } from '@angular/platform-browser';
 
 import { ToastrService } from '../../../shared/services/toastr.service';
 import { SinequaService } from '../../../shared/services/sinequa.service';
-import { HttpClient } from '@angular/common/http';
+import { HttpClient, HttpErrorResponse } from '@angular/common/http';
 import { LogsComponent } from '../logs/logs.component';
 
 
@@ -15,19 +15,25 @@ import { LogsComponent } from '../logs/logs.component';
 })
 export class PlatformMoniteringComponent implements OnInit {
 
-  urls = ['http://172.16.40.132/app/Demo/#/home',
-    'http://172.16.40.132/app/AnalyticsDashboard/#/search',
-    'http://172.16.40.132/app/people-finder/#/home']
+  // urls = [];
+  // appsList = [];
+  // profilesList = [];
+
 
   websiteSettings = {
     // hideSubHeader: true,
     columns: {
-      website: {
+      name: {
         title: 'Website Name',
         type: 'string',
-        width: '60%',
+        // width: '60%',
       },
-      rechablity: {
+      URL: {
+        title: 'Website URL',
+        type: 'url',
+        // width: '0%',
+      },
+      statusCode: {
         title: 'Reachability',
         type: 'html',
         filter: false,
@@ -35,7 +41,7 @@ export class PlatformMoniteringComponent implements OnInit {
         editable: false,
         sort: false,
         valuePrepareFunction: (value) => {
-          if (value) {
+          if (value==="OK") {
             return this.sanitizer.bypassSecurityTrustHtml(
               `<i class="nb-chevron-up" style="color:green;font-size: xx-large"></i>`);
           } else {
@@ -197,389 +203,6 @@ export class PlatformMoniteringComponent implements OnInit {
   workerSource: LocalDataSource = new LocalDataSource();
   webappSource: LocalDataSource = new LocalDataSource();
 
-  data = [
-    {
-      id: 1,
-      website: "google",
-      rechablity: true,
-    },
-    {
-      id: 2,
-      website: "facebook",
-      rechablity: true,
-    },
-    {
-      id: 1,
-      website: "twitter",
-      rechablity: false,
-    },
-    {
-      id: 1,
-      website: "google",
-      rechablity: true,
-    },
-    {
-      id: 2,
-      website: "facebook",
-      rechablity: true,
-    },
-    {
-      id: 1,
-      website: "twitter",
-      rechablity: false,
-    }, {
-      id: 1,
-      website: "google",
-      rechablity: true,
-    },
-    {
-      id: 2,
-      website: "facebook",
-      rechablity: true,
-    },
-    {
-      id: 1,
-      website: "twitter",
-      rechablity: false,
-    }, {
-      id: 1,
-      website: "google",
-      rechablity: true,
-    },
-    {
-      id: 2,
-      website: "facebook",
-      rechablity: true,
-    },
-    {
-      id: 1,
-      website: "twitter",
-      rechablity: false,
-    }, {
-      id: 1,
-      website: "google",
-      rechablity: true,
-    },
-    {
-      id: 2,
-      website: "facebook",
-      rechablity: true,
-    },
-    {
-      id: 1,
-      website: "twitter",
-      rechablity: false,
-    }, {
-      id: 1,
-      website: "google",
-      rechablity: true,
-    },
-    {
-      id: 2,
-      website: "facebook",
-      rechablity: true,
-    },
-    {
-      id: 1,
-      website: "twitter",
-      rechablity: false,
-    }, {
-      id: 1,
-      website: "google",
-      rechablity: true,
-    },
-    {
-      id: 2,
-      website: "facebook",
-      rechablity: true,
-    },
-    {
-      id: 1,
-      website: "twitter",
-      rechablity: false,
-    }, {
-      id: 1,
-      website: "google",
-      rechablity: true,
-    },
-    {
-      id: 2,
-      website: "facebook",
-      rechablity: true,
-    },
-    {
-      id: 1,
-      website: "twitter",
-      rechablity: false,
-    }, {
-      id: 1,
-      website: "google",
-      rechablity: true,
-    },
-    {
-      id: 2,
-      website: "facebook",
-      rechablity: true,
-    },
-    {
-      id: 1,
-      website: "twitter",
-      rechablity: false,
-    }, {
-      id: 1,
-      website: "google",
-      rechablity: true,
-    },
-    {
-      id: 2,
-      website: "facebook",
-      rechablity: true,
-    },
-    {
-      id: 1,
-      website: "twitter",
-      rechablity: false,
-    }, {
-      id: 1,
-      website: "google",
-      rechablity: true,
-    },
-    {
-      id: 2,
-      website: "facebook",
-      rechablity: true,
-    },
-    {
-      id: 1,
-      website: "twitter",
-      rechablity: false,
-    }, {
-      id: 1,
-      website: "google",
-      rechablity: true,
-    },
-    {
-      id: 2,
-      website: "facebook",
-      rechablity: true,
-    },
-    {
-      id: 1,
-      website: "twitter",
-      rechablity: false,
-    }, {
-      id: 1,
-      website: "google",
-      rechablity: true,
-    },
-    {
-      id: 2,
-      website: "facebook",
-      rechablity: true,
-    },
-    {
-      id: 1,
-      website: "twitter",
-      rechablity: false,
-    }, {
-      id: 1,
-      website: "google",
-      rechablity: true,
-    },
-    {
-      id: 2,
-      website: "facebook",
-      rechablity: true,
-    },
-    {
-      id: 1,
-      website: "twitter",
-      rechablity: false,
-    }, {
-      id: 1,
-      website: "google",
-      rechablity: true,
-    },
-    {
-      id: 2,
-      website: "facebook",
-      rechablity: true,
-    },
-    {
-      id: 1,
-      website: "twitter",
-      rechablity: false,
-    }, {
-      id: 1,
-      website: "google",
-      rechablity: true,
-    },
-    {
-      id: 2,
-      website: "facebook",
-      rechablity: true,
-    },
-    {
-      id: 1,
-      website: "twitter",
-      rechablity: false,
-    }, {
-      id: 1,
-      website: "google",
-      rechablity: true,
-    },
-    {
-      id: 2,
-      website: "facebook",
-      rechablity: true,
-    },
-    {
-      id: 1,
-      website: "twitter",
-      rechablity: false,
-    }, {
-      id: 1,
-      website: "google",
-      rechablity: true,
-    },
-    {
-      id: 2,
-      website: "facebook",
-      rechablity: true,
-    },
-    {
-      id: 1,
-      website: "twitter",
-      rechablity: false,
-    }, {
-      id: 1,
-      website: "google",
-      rechablity: true,
-    },
-    {
-      id: 2,
-      website: "facebook",
-      rechablity: true,
-    },
-    {
-      id: 1,
-      website: "twitter",
-      rechablity: false,
-    }, {
-      id: 1,
-      website: "google",
-      rechablity: true,
-    },
-    {
-      id: 2,
-      website: "facebook",
-      rechablity: true,
-    },
-    {
-      id: 1,
-      website: "twitter",
-      rechablity: false,
-    }, {
-      id: 1,
-      website: "google",
-      rechablity: true,
-    },
-    {
-      id: 2,
-      website: "facebook",
-      rechablity: true,
-    },
-    {
-      id: 1,
-      website: "twitter",
-      rechablity: false,
-    }, {
-      id: 1,
-      website: "google",
-      rechablity: true,
-    },
-    {
-      id: 2,
-      website: "facebook",
-      rechablity: true,
-    },
-    {
-      id: 1,
-      website: "twitter",
-      rechablity: false,
-    }, {
-      id: 1,
-      website: "google",
-      rechablity: true,
-    },
-    {
-      id: 2,
-      website: "facebook",
-      rechablity: true,
-    },
-    {
-      id: 1,
-      website: "twitter",
-      rechablity: false,
-    }, {
-      id: 1,
-      website: "google",
-      rechablity: true,
-    },
-    {
-      id: 2,
-      website: "facebook",
-      rechablity: true,
-    },
-    {
-      id: 1,
-      website: "twitter",
-      rechablity: false,
-    }, {
-      id: 1,
-      website: "google",
-      rechablity: true,
-    },
-    {
-      id: 2,
-      website: "facebook",
-      rechablity: true,
-    },
-    {
-      id: 1,
-      website: "twitter",
-      rechablity: false,
-    }, {
-      id: 1,
-      website: "google",
-      rechablity: true,
-    },
-    {
-      id: 2,
-      website: "facebook",
-      rechablity: true,
-    },
-    {
-      id: 1,
-      website: "twitter",
-      rechablity: false,
-    }, {
-      id: 1,
-      website: "google",
-      rechablity: true,
-    },
-    {
-      id: 2,
-      website: "facebook",
-      rechablity: true,
-    },
-    {
-      id: 1,
-      website: "twitter",
-      rechablity: false,
-    },
-  ]
-
   constructor(
     private ss: SinequaService,
     private sanitizer: DomSanitizer,
@@ -590,20 +213,35 @@ export class PlatformMoniteringComponent implements OnInit {
   }
 
   ngOnInit(): void {
-    // this.https.get('www.google.com').subscribe(resp =>{
-    //   console.log(resp)
-    // })
+    this.loadWebsitesData();
 
-    this.websiteSource.load(this.data);
     this.loadIndexes();
     this.servers.forEach(item => {
       this.loadData(item);
     })
-    // this.urls.forEach(url => {
-    //   this.https.get(url).subscribe(resp =>{
-    //     console.log(resp)
-    //   })
-    // })
+    // this.getApps();
+    // this.getProfiles();
+    
+  }
+
+  loadWebsitesData(refresh?){
+    let data = {
+      "method": "dev.plugin",  
+      "plugin": "SiteReachability",  
+      "output": "json",  
+      "user": "admin",  
+      "password": "admin"  
+  }
+    this.ss.getData(data).subscribe(resp => {
+      if (resp['methodresult'] === 'ok') {
+        let data = resp['Apps'];
+        this.websiteSource.load(data);
+        refresh ? this.toastr.showToast('success', 'Data Refreshed', '') : '' ;
+      } else {
+        this.toastr.showToast('danger', 'Something went wrong', 'Please try after sometime')
+      }
+    });
+
   }
 
   loadIndexes(refresh=false) {
@@ -622,8 +260,7 @@ export class PlatformMoniteringComponent implements OnInit {
       } else {
         this.toastr.showToast('danger', 'Something went wrong', 'Please try after sometime')
       }
-    })
-
+    });
   }
 
   loadData(item,refresh=false) {
@@ -663,7 +300,27 @@ export class PlatformMoniteringComponent implements OnInit {
   }
 
   addRecord(event) {
-    if (event.newData.website) {
+    if (event.newData.URL) {
+      let data = {
+        "method": "dev.plugin",    
+        "plugin": "UpdateMonitoringIndex",    
+        "output": "json",    
+        "user": "admin",    
+        "password": "admin",    
+        "websitename": event.newData.name,    
+        "websiteurl": event.newData.URL,
+        "actiontype":"insert"    
+    }
+    this.ss.postData(data).subscribe(resp => {
+      if (resp['methodresult'] === 'ok') {
+        console.log(resp)
+        this.loadWebsitesData(true)
+        // let data = resp['indexsize'];
+        // this.indexSource.load(data);
+      } else {
+        this.toastr.showToast('danger', 'Something went wrong', 'Please try after sometime')
+      }
+    });
       event.confirm.resolve(event.newData);
     }
     else {
@@ -692,11 +349,98 @@ export class PlatformMoniteringComponent implements OnInit {
   }
 
   onDeleteConfirm(event): void {
+    console.log(event)
     if (window.confirm('Are you sure you want to delete?')) {
+      let data = {
+        "method": "dev.plugin",    
+        "plugin": "UpdateMonitoringIndex",    
+        "output": "json",    
+        "user": "admin",    
+        "password": "admin",    
+        "websitename": event.data.name,    
+        "websiteurl": event.data.URL,
+        "actiontype":"delete"    
+    }
+    this.ss.postData(data).subscribe(resp => {
+      if (resp['methodresult'] === 'ok') {
+        console.log(resp)
+        this.loadWebsitesData(true)
+      } else {
+        this.toastr.showToast('danger', 'Something went wrong', 'Please try after sometime')
+      }
+    });
       event.confirm.resolve();
     } else {
       event.confirm.reject();
     }
   }
 
+  // getApps(){
+  //   let params = {
+  //     "method": "admin.config",
+  //     "action" : "list",
+  //     "list" : "listapp",
+  //     "user": "admin",
+  //     "password": "admin"
+  //   }
+  //   this.ss.getApps(params).subscribe(resp => {
+  //     if (resp['methodresult'] === 'ok') {
+  //       let data = resp['data'];
+  //       data.map((item) =>{
+  //         item['url'] = 'http://172.16.40.132/app/' + item.name + '/#/home';          
+  //       });
+  //       this.appsList = data;
+  //       this.urls = this.appsList;
+  //     } else {
+  //       this.toastr.showToast('danger', 'Something went wrong', 'Please try after sometime')
+  //     }
+  //   })
+  // }
+
+  // getProfiles(){
+  //   let params = {
+  //     "method": "admin.config",
+  //     "action" : "list",
+  //     "list" : "listprofile",
+  //     "user": "admin",
+  //     "password": "admin"
+  //   }
+  //   this.ss.getApps(params).subscribe(resp => {
+  //     if (resp['methodresult'] === 'ok') {
+  //       let data = resp['data'];
+  //       data.map((item) =>{
+  //         item['url'] = 'http://172.16.40.132/search?profile=' + item.name;
+  //       });
+  //       this.profilesList = data;
+  //       this.profilesList.forEach(val => this.urls.push(Object.assign({}, val)));
+  //       this.urls = this.urls.filter(function(elem){
+  //         return elem.name.indexOf("_")!=0;
+  //       });
+  //       this.checkReachability();
+  //       this.websiteSource.load(this.urls);
+  //     } else {
+  //       this.toastr.showToast('danger', 'Something went wrong', 'Please try after sometime')
+  //     }
+  //   })
+  // }
+
+
+  // checkReachability(){
+  //   this.urls.map((item)=>{
+  //     this.https.get(item['url']).subscribe(resp =>{
+  //       console.log(resp)
+  //       if(resp['status'] == 200){
+  //         item.rechablity = true;
+  //         return item;
+  //       }               
+  //     },
+  //     (err: HttpErrorResponse) => {
+  //       if (err.error instanceof Error) {
+  //         console.log("Client-side error occured.");
+  //       } else {
+  //         console.log("Server-side error occured.");
+  //       }
+  //     });      
+  //   });
+  // }
 }

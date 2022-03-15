@@ -1,15 +1,106 @@
-<div class="container-fluid">
-    <nb-card [size]="breakpoint.width >= breakpoints.md ? 'medium' : 'giant'">
-        <nb-card-header>Country</nb-card-header>
-        <nb-card-body>
-          <ngx-country-orders-map (select)="selectCountryById($event)"
-                                  countryId="USA">
-          </ngx-country-orders-map>
-          <ngx-country-orders-chart [countryName]="countryName"
-                                    [data]="countryData"
-                                    [labels]="countriesCategories"
-                                    maxValue="20">
-          </ngx-country-orders-chart>
-        </nb-card-body>
-      </nb-card>
+<div class="col-md-12 col-lg-12">
+  <nb-card>
+    <nb-tabset>
+      <nb-tab tabTitle="Relevancy">
+        <nb-card>
+          <nb-card-header>
+            <div class="card-header">
+              <span>Number of No Result Queries over Time</span>
+              <span><i class="nb-arrow-thin-down" title="Download" (click)="downloadPdf()"></i></span>
+            </div>
+          </nb-card-header>
+          
+          <nb-card-body>
+            <ngx-charts-line-chart [view]="view" [scheme]="colorScheme1" [legend]="legend"
+              [showXAxisLabel]="showXAxisLabel" [showYAxisLabel]="showYAxisLabel" [xAxis]="xAxis" [yAxis]="yAxis"
+              [xAxisLabel]="xAxisLabel1" [yAxisLabel]="yAxisLabel1" [timeline]="timeline" [results]="multi1"
+              (select)="onSelect($event)" (activate)="onActivate($event)" (deactivate)="onDeactivate($event)">
+            </ngx-charts-line-chart>
+          </nb-card-body>
+        </nb-card>
+        <!-- <nb-card>
+          <nb-card-header>Number of No Result Queries over Time</nb-card-header>
+          <nb-card-body>
+            <ngx-charts-gauge [view]="view" [scheme]="colorScheme1" [legend]="legend"
+              [showXAxisLabel]="showXAxisLabel" [showYAxisLabel]="showYAxisLabel" [xAxis]="xAxis" [yAxis]="yAxis"
+              [xAxisLabel]="xAxisLabel1" [yAxisLabel]="yAxisLabel1" [timeline]="timeline" [results]="multi1"
+              (select)="onSelect($event)" (activate)="onActivate($event)" (deactivate)="onDeactivate($event)">
+            </ngx-charts-gauge>
+          </nb-card-body>
+        </nb-card> -->
+      </nb-tab>
+      <nb-tab tabTitle="Performance">
+        <div class="">
+          <nb-card>
+            <nb-card-header>Average Response Time</nb-card-header>
+            <nb-card-body>
+              <ngx-charts-bar-vertical-2d [view]="view" [scheme]="colorScheme" [results]="multi2" [gradient]="gradient"
+                [xAxis]="showXAxis" [yAxis]="showYAxis" [legend]="showLegend" [showXAxisLabel]="showXAxisLabel"
+                [showYAxisLabel]="showYAxisLabel" [xAxisLabel]="xAxisLabel2" [yAxisLabel]="yAxisLabel2"
+                [legendTitle]="legendTitle" (select)="onSelect($event)" (activate)="onActivate($event)"
+                (deactivate)="onDeactivate($event)">
+              </ngx-charts-bar-vertical-2d>
+            </nb-card-body>
+          </nb-card>
+        </div>
+      </nb-tab>
+      <nb-tab tabTitle="Trending">
+        <div class="">
+          <nb-card>
+            <nb-card-header>
+              <div class="pie-header">
+                <span>No Of Searches over Country</span>
+                <span>Total No of Searches : <b>27,340</b></span>
+              </div>
+            </nb-card-header>
+            <nb-card-body>
+              <ngx-charts-pie-chart [view]="view" [scheme]="colorScheme" [results]="single" [gradient]="gradient"
+                [legend]="showLegend" [legendPosition]="legendPosition" [labels]="showLabels" [doughnut]="isDoughnut"
+                (select)="onSelect($event)" (activate)="onActivate($event)" (deactivate)="onDeactivate($event)">
+              </ngx-charts-pie-chart>
+            </nb-card-body>
+          </nb-card>
+        </div>
+        <div class="">
+          <nb-card>
+            <nb-card-header>
+              <div class="">
+                <span>No Of Searches over Country</span>
+              </div>
+            </nb-card-header>
+            <nb-card-body>
+              <ngx-charts-gauge [view]="view" [scheme]="colorScheme" [results]="single" [gradient]="gradient"
+                [legend]="showLegend" [legendPosition]="legendPosition" [labels]="showLabels" [doughnut]="isDoughnut"
+                (select)="onSelect($event)" (activate)="onActivate($event)" (deactivate)="onDeactivate($event)">
+              </ngx-charts-gauge>
+            </nb-card-body>
+          </nb-card>
+        </div>
+        <!-- <div class="">
+          <nb-card [size]="breakpoint.width >= breakpoints.md ? 'medium' : 'giant'">
+            <nb-card-header>Country</nb-card-header>
+            <nb-card-body>
+              <ngx-country-orders-map (select)="selectCountryById($event)" countryId="USA">
+              </ngx-country-orders-map>
+              <ngx-country-orders-chart [countryName]="countryName" [data]="countryData" [labels]="countriesCategories"
+                maxValue="20">
+              </ngx-country-orders-chart>
+            </nb-card-body>
+          </nb-card>
+        </div> -->
+        <div class="">
+          <nb-card>
+            <nb-card-header>No Of Visitors over Country</nb-card-header>
+            <nb-card-body>
+              <ngx-charts-bar-vertical [view]="view" [scheme]="colorScheme1" [results]="single1" [gradient]="gradient"
+                [xAxis]="showXAxis" [yAxis]="showYAxis" [legend]="showLegend" [showXAxisLabel]="showXAxisLabel"
+                [showYAxisLabel]="showYAxisLabel" [xAxisLabel]="xAxisLabel5" [yAxisLabel]="yAxisLabel5"
+                (select)="onSelect($event)">
+              </ngx-charts-bar-vertical>
+            </nb-card-body>
+          </nb-card>
+        </div>
+      </nb-tab>
+    </nb-tabset>
+  </nb-card>
 </div>

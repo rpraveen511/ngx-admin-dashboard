@@ -1,16 +1,18 @@
-import { Component, OnInit, ViewChild, TemplateRef } from '@angular/core';
+import { Component, OnInit, ViewChild, TemplateRef, AfterViewInit } from '@angular/core';
 import { DayPilot, DayPilotCalendarComponent, DayPilotMonthComponent } from "@daypilot/daypilot-lite-angular";
 import { NbDialogService } from '@nebular/theme';
 
 import { ToastrService } from '../../../shared/services/toastr.service';
 import { SinequaService } from '../../../shared/services/sinequa.service';
+import { HttpErrorResponse } from '@angular/common/http';
+
 
 @Component({
   selector: 'ngx-monitering',
   templateUrl: './monitering.component.html',
   styleUrls: ['./monitering.component.scss']
 })
-export class MoniteringComponent implements OnInit {
+export class MoniteringComponent implements OnInit, AfterViewInit {
 
   @ViewChild("day") day!: DayPilotCalendarComponent;
   @ViewChild("week") week!: DayPilotCalendarComponent;
@@ -20,44 +22,55 @@ export class MoniteringComponent implements OnInit {
   date = DayPilot.Date.today();
   dateDisplayFormat = '';
   dayIndex = 0;
-  months = ['January','February','March','April','May','June','July','August','September','October','November','December']
+  months = ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December']
   eventId = '';
   eventDetails = {};
+  showNavigator = false;
   server = {
     node: '',
-    jobType: 'all',
-    statusType: 'all'
+    jobType: 'All',
+    statusType: 'All'
   };
   nodes = [];
   jobTypes = [
-    { name: 'All', value: 'all' },
-    { name: 'Collections', value: 'collections' },
+    { name: 'All', value: 'All' },
+    { name: 'Collections', value: 'connector' },
     { name: 'Domain', value: 'domain' },
     { name: 'Command', value: 'command' }];
 
   statusTypes = [
-    { name: 'All', value: 'all' },
-    { name: 'Error', value: 'error' },
+    { name: 'All', value: 'All' },
+    { name: 'Error', value: 'Error' },
     { name: 'Running', value: 'Running' },
     { name: 'Warning', value: 'Warning' },
     { name: 'Ok', value: 'OK' }];
 
-  views = [{ name: 'Month', value: 'Month' },{ name: 'Week', value: 'Week' },{ name: 'Day', value: 'Day' }]
+  views = [{ name: 'Month', value: 'Month' }, { name: 'Week', value: 'Week' }, { name: 'Day', value: 'Day' }]
 
-  configNavigator: DayPilot.NavigatorConfig = {    
+  configNavigator: DayPilot.NavigatorConfig = {
+    showMonths: 1,
+    skipMonths: 1,
+    cellWidth: 25,
+    cellHeight: 25,
+    dayHeaderHeight: 30,
+    titleHeight: 30,
+    selectMode:'Month',
+    onVisibleRangeChanged: args => {
+      this.loadEvents();
+    }
   };
 
   configDay: DayPilot.CalendarConfig = {
-    eventMoveHandling :'Disabled',
+    eventMoveHandling: 'Disabled',
     onEventClick: function (args) {
       localStorage.setItem('eventId', args.e.data.id);
-    },    
+    },
   };
 
   configWeek: DayPilot.CalendarConfig = {
     viewType: "Week",
-    eventMoveHandling :'Disabled',
-    eventResizeHandling: 'Disabled',    
+    eventMoveHandling: 'Disabled',
+    eventResizeHandling: 'Disabled',
     onEventClick: function (args) {
       args.preventDefault();
       localStorage.setItem('eventId', args.e.data.id);
@@ -65,12 +78,12 @@ export class MoniteringComponent implements OnInit {
   };
 
   configMonth: DayPilot.MonthConfig = {
-    eventMoveHandling :'Disabled',
+    eventMoveHandling: 'Disabled',
     onEventClick: function (args) {
       args.preventDefault();
       localStorage.setItem('eventId', args.e.data.id);
     },
-    onEventClicked : function(args) {
+    onEventClicked: function (args) {
       alert("clicked: " + args.e.id());
     }
   };
@@ -80,13 +93,17 @@ export class MoniteringComponent implements OnInit {
     private dialogService: NbDialogService,
     private toastr: ToastrService
   ) {
-    this.viewMonth();
+    this.viewDay();
   }
 
   ngOnInit() {
-    this.dateDisplayFormat = this.months[this.date.getMonth()] + " " + this.date.getYear()
-    this.loadEvents();
+    // this.dateDisplayFormat = this.months[this.date.getMonth()] + " " + this.date.getYear();
+    this.dateDisplayFormat = this.date.getDay() + " " + this.months[this.date.getMonth()] + " "+ this.date.getYear();
     this.getNodes();
+  }
+
+  ngAfterViewInit(){
+    this.loadEvents();
   }
 
   getNodes() {
@@ -104,6 +121,13 @@ export class MoniteringComponent implements OnInit {
       } else {
         this.toastr.showToast('danger', 'Something went wrong', 'Please try after sometime')
       }
+    },
+    (err: HttpErrorResponse) => {
+      if (err.error instanceof Error) {
+        console.log("Client-side error occured.");
+      } else {
+        console.log("Server-side error occured.");
+      }
     })
   }
 
@@ -120,6 +144,13 @@ export class MoniteringComponent implements OnInit {
         this.events = resp['events'];
       } else {
         this.toastr.showToast('danger', 'Something went wrong', 'Please try after sometime');
+      }
+    },
+    (err: HttpErrorResponse) => {
+      if (err.error instanceof Error) {
+        console.log("Client-side error occured.");
+      } else {
+        console.log("Server-side error occured.");
       }
     });
   }
@@ -141,6 +172,13 @@ export class MoniteringComponent implements OnInit {
       } else {
         this.toastr.showToast('danger', 'Something went wrong', 'Please try after sometime')
       }
+    },
+    (err: HttpErrorResponse) => {
+      if (err.error instanceof Error) {
+        console.log("Client-side error occured.");
+      } else {
+        console.log("Server-side error occured.");
+      }
     })
   }
 
@@ -156,12 +194,19 @@ export class MoniteringComponent implements OnInit {
     this.ss.getNodes(data).subscribe(resp => {
       if (resp['methodresult'] === 'ok') {
         let eventdata = resp['details'][0];
-        if(eventdata.stats){
+        if (eventdata.stats) {
           eventdata.stats = eventdata.stats.split("\r\n");
         }
-        this.eventDetails = eventdata;        
+        this.eventDetails = eventdata;
       } else {
         this.toastr.showToast('danger', 'Something went wrong', 'Please try after sometime')
+      }
+    },
+    (err: HttpErrorResponse) => {
+      if (err.error instanceof Error) {
+        console.log("Client-side error occured.");
+      } else {
+        console.log("Server-side error occured.");
       }
     })
   }
@@ -187,83 +232,112 @@ export class MoniteringComponent implements OnInit {
     this.configMonth.visible = true;
   }
 
-  changeDate(value): void {
-    let configView = this.configNavigator.selectMode
-    if(value==='previous'){
-      switch (configView) {        
-        case 'Day':
-          this.dayIndex-= 1;
-          this.configDay.startDate = DayPilot.Date.today().addDays(this.dayIndex);
-          this.dateDisplayFormat = this.configDay.startDate.getDay() + " " +this.months[this.configDay.startDate.getMonth()] + " " 
-                                  +  this.configDay.startDate.getYear();
-          break;
-        case 'Week':
-          this.dayIndex-= 7;
-          this.configWeek.startDate = DayPilot.Date.today().addDays(this.dayIndex);
-          console.log(this.configWeek.startDate.toDate())
-          var t = new Date(this.configWeek.startDate.toDate());
-          t.setDate(t.getDate() - t.getDay());
-          let startDate = new DayPilot.Date(t);
-          let endDate = new DayPilot.Date(startDate).addDays(6)
-          this.dateDisplayFormat =  startDate.getDay() + " " + this.months[startDate.getMonth()] 
-            + " " + startDate.getYear() + " - " +  endDate.getDay() + " " + this.months[endDate.getMonth()] 
-            + " " + endDate.getYear();
-          break;
-        case 'Month':
-          this.dayIndex-= 30;
-          this.configMonth.startDate = DayPilot.Date.today().addDays(this.dayIndex);
-          this.dateDisplayFormat = this.months[this.configMonth.startDate.getMonth()] + " " 
-                                    + this.configMonth.startDate.getYear();
-
-          break;        
-      }      
-    } else {
-      switch (configView) {        
-        case 'Day':
-          this.dayIndex+= 1;
-          this.configDay.startDate = DayPilot.Date.today().addDays(this.dayIndex);
-          this.dateDisplayFormat = this.configDay.startDate.getDay() + " " +this.months[this.configDay.startDate.getMonth()] + " " 
-                                  +  this.configDay.startDate.getYear();
-          break;
-        case 'Week':
-          this.dayIndex+= 7;
-          this.configWeek.startDate = DayPilot.Date.today().addDays(this.dayIndex);
-          var t = new Date(this.configWeek.startDate.toDate());
-          t.setDate(t.getDate() - t.getDay());
-          let startDate = new DayPilot.Date(t);
-          let endDate = new DayPilot.Date(startDate).addDays(6)
-          this.dateDisplayFormat =  startDate.getDay() + " " + this.months[startDate.getMonth()] 
-            + " " + startDate.getYear() + " - " +  endDate.getDay() + " " + this.months[endDate.getMonth()] 
-            + " " + endDate.getYear();
-          break;
-        case 'Month':
-          this.dayIndex+= 30;
-          this.configMonth.startDate = DayPilot.Date.today().addDays(this.dayIndex);
-          this.dateDisplayFormat = this.months[this.configMonth.startDate.getMonth()] + " " 
-                                    + this.configMonth.startDate.getYear();
-          break;        
-      }
-    }    
+  changeDateNav(date: DayPilot.Date): void {
+    this.configDay.startDate = date;
+    this.configWeek.startDate = date;
+    this.configMonth.startDate = date;
+    switch (this.configNavigator.selectMode) {
+      case 'Day':
+        this.dateDisplayFormat = this.configDay.startDate.getDay() + " " + this.months[this.configDay.startDate.getMonth()] + " "
+          + this.configDay.startDate.getYear();
+        break;
+      case 'Week':
+        var t = date.toDate();
+        t.setDate(t.getDate() - t.getDay());
+        let startDate = new DayPilot.Date(t);
+        let endDate = new DayPilot.Date(startDate).addDays(6)
+        this.dateDisplayFormat = startDate.getDay() + " " + this.months[startDate.getMonth()]
+          + " " + startDate.getYear() + " - " + endDate.getDay() + " " + this.months[endDate.getMonth()]
+          + " " + endDate.getYear();
+        break;
+      case 'Month':
+        this.dateDisplayFormat = this.months[this.configMonth.startDate.getMonth()] + " "
+          + this.configMonth.startDate.getYear();
+        break;
+    }
   }
 
-  selectView(event){
-    switch(event.target.value){
+  changeDate(value): void {
+    if (value === 'previous') {
+      switch (this.configNavigator.selectMode) {
+        case 'Day':
+          this.dayIndex -= 1;
+          this.configDay.startDate = DayPilot.Date.today().addDays(this.dayIndex);
+          this.dateDisplayFormat = this.configDay.startDate.getDay() + " " + this.months[this.configDay.startDate.getMonth()] + " "
+            + this.configDay.startDate.getYear();
+          break;
+        case 'Week':
+          this.dayIndex -= 7;
+          this.configWeek.startDate = DayPilot.Date.today().addDays(this.dayIndex);
+          var t = this.configWeek.startDate.toDate();
+          t.setDate(t.getDate() - t.getDay());
+          let startDate = new DayPilot.Date(t);
+          let endDate = new DayPilot.Date(startDate).addDays(6)
+          this.dateDisplayFormat = startDate.getDay() + " " + this.months[startDate.getMonth()]
+            + " " + startDate.getYear() + " - " + endDate.getDay() + " " + this.months[endDate.getMonth()]
+            + " " + endDate.getYear();
+          break;
+        case 'Month':
+          this.dayIndex -= 30;
+          this.configMonth.startDate = DayPilot.Date.today().addDays(this.dayIndex);
+          this.dateDisplayFormat = this.months[this.configMonth.startDate.getMonth()] + " "
+            + this.configMonth.startDate.getYear();
+          break;
+      }
+    } else {
+      switch (this.configNavigator.selectMode) {
+        case 'Day':
+          this.dayIndex += 1;
+          this.configDay.startDate = DayPilot.Date.today().addDays(this.dayIndex);
+          this.dateDisplayFormat = this.configDay.startDate.getDay() + " " + this.months[this.configDay.startDate.getMonth()] + " "
+            + this.configDay.startDate.getYear();
+          break;
+        case 'Week':
+          this.dayIndex += 7;
+          this.configWeek.startDate = DayPilot.Date.today().addDays(this.dayIndex);
+          var t = this.configWeek.startDate.toDate();
+          t.setDate(t.getDate() - t.getDay());
+          let startDate = new DayPilot.Date(t);
+          let endDate = new DayPilot.Date(startDate).addDays(6)
+          this.dateDisplayFormat = startDate.getDay() + " " + this.months[startDate.getMonth()]
+            + " " + startDate.getYear() + " - " + endDate.getDay() + " " + this.months[endDate.getMonth()]
+            + " " + endDate.getYear();
+          break;
+        case 'Month':
+          this.dayIndex += 30;
+          this.configMonth.startDate = DayPilot.Date.today().addDays(this.dayIndex);
+          this.dateDisplayFormat = this.months[this.configMonth.startDate.getMonth()] + " "
+            + this.configMonth.startDate.getYear();
+          break;
+      }
+    }
+  }
+
+  displayNavigator() {
+    this.showNavigator = !this.showNavigator;
+  }
+
+  selectView(event) {
+    switch (event) {
       case 'Day':
         this.viewDay();
         this.configNavigator.selectMode = 'Day';
-        this.dateDisplayFormat = this.date.getDay() + " " +this.months[this.date.getMonth()] + " " 
-                                  +  this.date.getYear();
+        this.dateDisplayFormat = this.date.getDay() + " " + this.months[this.date.getMonth()] + " "
+          + this.date.getYear();
         break;
       case 'Week':
         this.viewWeek();
         this.configNavigator.selectMode = 'Week';
-        var t = new Date();
+        this.configWeek.startDate = DayPilot.Date.today();
+        var t = this.configWeek.startDate.toDate();
         t.setDate(t.getDate() - t.getDay());
         let startDate = new DayPilot.Date(t);
-        let endDate = new DayPilot.Date(startDate).addDays(6)
-        this.dateDisplayFormat =  startDate.getDay() + " " + this.months[startDate.getMonth()] 
-          + " " + startDate.getYear() + " - " +  endDate.getDay() + " " + this.months[endDate.getMonth()] 
-          + " " + endDate.getYear();
+        let endDate = new DayPilot.Date(startDate).addDays(6);
+        setTimeout(() => {
+          this.dateDisplayFormat = startDate.getDay() + " " + this.months[startDate.getMonth()]
+          + " " + startDate.getYear() + " - " + endDate.getDay() + " " + this.months[endDate.getMonth()]
+          + " " + endDate.getYear();          
+        }, 10);        
         break;
       case 'Month':
         this.viewMonth();
@@ -275,24 +349,24 @@ export class MoniteringComponent implements OnInit {
   }
 
   selectNode(event) {
-    this.server.node = event.target.value;
+    this.server.node = event;
     this.loadEventsBasedonSelection();
   }
 
   selectJobType(event) {
-    if (event.target.value === 'all' && this.server.statusType === 'all') {
+    if (event === 'all' && this.server.statusType === 'all') {
       this.loadEvents();
     } else {
-      this.server.jobType = event.target.value;
+      this.server.jobType = event;
       this.loadEventsBasedonSelection();
     }
   }
 
   selectStatus(event) {
-    if (event.target.value === 'all' && this.server.jobType === 'all') {
+    if (event === 'all' && this.server.jobType === 'all') {
       this.loadEvents();
     } else {
-      this.server.statusType = event.target.value;
+      this.server.statusType = event;
       this.loadEventsBasedonSelection();
     }
   }
