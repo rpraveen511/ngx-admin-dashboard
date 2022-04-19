@@ -1,7 +1,12 @@
-import { Component, OnInit, OnDestroy,  } from '@angular/core';
+import { Component, OnInit, OnDestroy, ViewChild, ElementRef } from '@angular/core';
 import { NbMediaBreakpoint, NbMediaBreakpointsService, NbThemeService } from '@nebular/theme';
 import { takeWhile } from 'rxjs/operators';
 import { CountryOrderData } from '../../../@core/data/country-order';
+import { jsPDF } from "jspdf";
+import html2canvas from 'html2canvas';
+import { SinequaService } from '../../../shared/services/sinequa.service';
+import { ToastrService } from '../../../shared/services/toastr.service';
+
 
 @Component({
   selector: 'ngx-kpi-dashboard',
@@ -10,6 +15,21 @@ import { CountryOrderData } from '../../../@core/data/country-order';
 })
 export class KpiDashboardComponent implements OnInit, OnDestroy {
 
+  // @ViewChild('line-chart') element: ElementRef;
+
+  dateRanges = [
+    {name: 'Day', value: 'day'},
+    {name: 'Week', value: 'week'},
+    {name: 'Month', value: 'month'},
+    {name: 'Year', value: 'year'},
+    {name: 'Custom', value: 'custom'}];
+
+    application = [
+      {name: 'SBA', value: 'sba'},
+      {name: 'Profiles', value: 'profiles'}];  
+
+  dateRange ='month';  
+  dateRangeFlag = false;
   private alive = true;
 
   countryName = '';
@@ -71,7 +91,11 @@ export class KpiDashboardComponent implements OnInit, OnDestroy {
   constructor(
     private themeService: NbThemeService,
     private breakpointService: NbMediaBreakpointsService,
-    private countryOrderService: CountryOrderData
+    private countryOrderService: CountryOrderData,
+    private ss: SinequaService,
+    private toastr: ToastrService
+
+
     ) {
     this.breakpoints = this.breakpointService.getBreakpointsMap();
     this.single =[
@@ -286,6 +310,45 @@ export class KpiDashboardComponent implements OnInit, OnDestroy {
         this.countriesCategories = countriesCategories;
       });
     this.selectCountryById(this.countryName)
+    this.getAppsList();
+    this.getProfilesList();
+
+
+  }
+
+  getAppsList(){
+    let data = {
+      "method" : "admin.config",
+      "action" : "list",
+      "list" : "listapp",
+      "user": "admin",  
+      "password": "admin"
+    }
+    this.ss.getApps(data).subscribe(resp => {
+      if (resp['methodresult'] === 'ok') {
+        let data = resp['data'];
+      } else {
+        this.toastr.showToast('danger', 'Something went wrong', 'Please try after sometime')
+      }
+    });
+  }
+
+  
+  getProfilesList(){
+    let data = {
+      "method" : "admin.config",
+      "action" : "list",
+      "list" : "listprofile",
+      "user": "admin",  
+      "password": "admin"
+    }
+    this.ss.getApps(data).subscribe(resp => {
+      if (resp['methodresult'] === 'ok') {
+        let data = resp['data'];
+      } else {
+        this.toastr.showToast('danger', 'Something went wrong', 'Please try after sometime')
+      }
+    });
   }
 
   selectCountryById(countryName: string) {
@@ -314,6 +377,45 @@ export class KpiDashboardComponent implements OnInit, OnDestroy {
   }
 
   downloadPdf(){
+    document.getElementById("charts-container").style.display="block";
+  //   var doc = new jsPDF("p", "mm", "a4"); 
+
+  //   html2canvas(document.querySelector("#charts-container")).then(canvas => {
+  //     var pdfFile = new jsPDF("p", "pt");
+  //     var width = (doc.internal.pageSize.getWidth()*2);
+  //     var height = (doc.internal.pageSize.getHeight()*2 +50);
+  //     var imgData  = canvas.toDataURL("image/jpeg", 1.0);
+  //     pdfFile.addImage(imgData,20,10,width, height);
+  //     pdfFile.save('sample.pdf');
+  // });    
+  html2canvas(document.querySelector("#charts-container"), { scrollY: -window.scrollY }).then((canvas) => {
+    const imgData = canvas.toDataURL('image/jpeg');
+    const pdf = new jsPDF('p', 'mm', 'a4');    
+    const imgProps = pdf.getImageProperties(imgData);
     
-    }
+    // doc and image dimensions
+    const pdfWidth = pdf.internal.pageSize.getWidth();
+    const pdfHeight = pdf.internal.pageSize.getHeight();
+    const imgWidth = imgProps.width;
+    const imgHeight = imgProps.height;
+  
+    // claculating right scale to fit the page
+    const scale = Math.max(pdfHeight / imgHeight, pdfWidth / imgWidth);
+    const finalWidth = (imgWidth * scale)/2 + 10;
+    const finalHeight = (imgHeight * scale)/2 + 10;
+    // add image with alias and compression of your choice
+    pdf.addImage( imgData, 'PNG', 20, 20, finalWidth, finalHeight, 'alias', 'FAST');
+    pdf.save( 'chart.pdf' );
+  });
+  document.getElementById("charts-container").style.display="none"
+  }
+
+  selectDateRange(event){
+    event=="custom" ? this.dateRangeFlag=true : this.dateRangeFlag=false;   
+
+  }
+  
+  selectApp(event){
+
+  }
 }

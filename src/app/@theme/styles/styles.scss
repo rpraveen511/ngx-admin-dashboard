@@ -52,4 +52,22 @@
   }
 }
 
+nb-option:hover, nb-option.selected{
+  color: black !important;
+  background: rgba(32, 94, 172, 0.1) !important;
+  position: relative;
+  &::after {
+   content: '';
+   display: inline-block;
+   width: 5px;
+   height: 100%;
+   background: rgb(67, 31, 226);
+   position: absolute;
+   right: 0;
+   top: 0;
+   border-top-left-radius: 8px;
+   border-bottom-left-radius: 8px;
+ }
+}
+
 

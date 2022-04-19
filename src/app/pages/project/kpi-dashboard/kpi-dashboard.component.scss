@@ -16,6 +16,22 @@
     }
   }
 }
+label{
+  align-self: center;
+}
+.header-top{
+  margin: 10px;
+  display: flex;
+  justify-content: space-evenly;
+}
+
+.m-l-10{
+  margin-left: 10px;
+}
+
+.m-l-20{
+  margin-left: 20px;
+}
 
 .pie-header{
   display: flex;
@@ -28,8 +44,10 @@
 }
 
 .nb-arrow-thin-down{
-  color: black;
   font-size: x-large;
   font-weight: 600;
-  cursor: pointer;
+}
+
+#charts-container{
+  display: none;
 }

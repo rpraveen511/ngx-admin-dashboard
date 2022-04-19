@@ -5,7 +5,7 @@ import { HttpClientModule } from '@angular/common/http';
 import { FormsModule } from '@angular/forms';
 
 import { NbCardModule, NbProgressBarModule, NbIconModule, NbTabsetModule,
-  NbButtonModule, NbInputModule, NbSelectModule, NbCheckboxModule } from '@nebular/theme';
+  NbButtonModule, NbInputModule, NbSelectModule, NbCheckboxModule, NbDatepickerModule } from '@nebular/theme';
 import { Ng2SmartTableModule } from 'ng2-smart-table';
 
 import { ECommerceModule } from '../e-commerce/e-commerce.module';
@@ -41,6 +41,7 @@ import { NgxChartsModule } from '@swimlane/ngx-charts';
     NbInputModule,
     NbSelectModule,
     NbCheckboxModule,
+    NbDatepickerModule,
     Ng2SmartTableModule,
     NgxChartsModule,
     CommonModule,
